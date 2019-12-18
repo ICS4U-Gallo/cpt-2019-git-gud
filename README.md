@@ -1,9 +1,9 @@
-# Program Title (replace)
+# Pokemon
 Program description. Replace with description of your program. Give a description of each scene.
 
 ### Group Members:
-- Member1
-- Member2
+- Joseph Zhang
+- Joshua Chuang
 
 
 # CPT 2019
