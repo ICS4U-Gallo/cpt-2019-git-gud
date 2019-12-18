@@ -5,7 +5,7 @@ import settings
 
 class Chapter2View(arcade.View):
     def on_show(self):
-        arcade.set_background_color(arcade.color.WHITE)
+        arcade.set_background_color(arcade.color.RADICAL_RED)
 
     def on_draw(self):
         arcade.start_render()
