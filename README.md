@@ -1,4 +1,4 @@
-# Pokemon
+# Pokemon for PC (all gens)
 Program description. Replace with description of your program. Give a description of each scene.
 
 ### Group Members:
@@ -115,3 +115,6 @@ if len(enemy_ships) == 0:
 
 *Note: When running your scene directly, not from `main.py`'s `Director`, I set up code to print out `"SCENE COMPLETE"` and exit
 the window. You can prevent it from exiting the window by setting the key-word argument `close_on_next_view` to `False`.*
+
+## Extra Scenes (if possible)
+- Nothing for now
