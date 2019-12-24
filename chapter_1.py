@@ -73,6 +73,10 @@ class Chapter1View(arcade.View):
                 self.gender -= 1
         
         if not self.chosen and key == arcade.key.ENTER:
+            if self.gender == 0:
+                settings.CHAR = "MALE"
+            else:
+                settings.CHAR = "FEMALE"
             self.chosen = True
         
         if self.chosen and key == arcade.key.ENTER:
