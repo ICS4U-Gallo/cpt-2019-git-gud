@@ -10,6 +10,8 @@ class MenuView(arcade.View):
             "images/screen_menu_background.png")
         self.switch = True
         self.count = 0
+        self.music = arcade.load_sound("audio/screen_menu.mp3")
+        self.music.play()
 
     def on_draw(self):
         arcade.start_render()
