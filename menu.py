@@ -2,6 +2,8 @@ import arcade
 
 import settings
 
+import time
+
 
 class MenuView(arcade.View):
     def on_show(self):
@@ -10,9 +12,10 @@ class MenuView(arcade.View):
             "images/screen_menu_background.png")
         self.switch = True
         self.count = 0
-        self.music = arcade.load_sound("audio/screen_menu.mp3")
-        self.music.play()
-
+        self.background_music = arcade.load_sound("audio/screen_menu.mp3")
+        self.ring = arcade.load_sound("audio/menu_get.mp3")
+        arcade.play_sound(self.background_music)
+        
     def on_draw(self):
         arcade.start_render()
         
@@ -39,6 +42,8 @@ class MenuView(arcade.View):
                 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ENTER:
+            arcade.play_sound(self.ring)
+            arcade.pause(0.6)
             self.director.next_view()
             
 
