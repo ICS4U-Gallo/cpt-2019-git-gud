@@ -8,14 +8,33 @@ class MenuView(arcade.View):
         arcade.set_background_color(arcade.color.BLACK)
         self.background = arcade.load_texture(
             "images/screen_menu_background.png")
+        self.switch = True
+        self.count = 0
 
     def on_draw(self):
         arcade.start_render()
         
-        
         arcade.draw_texture_rectangle(settings.WIDTH // 2, settings.HEIGHT // 2,
                                       settings.WIDTH, settings.HEIGHT, self.background)
-
+        
+        if self.switch:
+            arcade.draw_text("ENTER ", settings.WIDTH // 2, settings.HEIGHT // 4,
+                            arcade.color.GOLD, 30, 0,  "center", 'Comic Sans', True, False,
+                            "center", "center")
+            self.count += 1
+            if self.count >= 50:
+                self.switch = False
+                self.count = 0
+                
+        elif not self.switch:
+            arcade.draw_text("ENTER ", settings.WIDTH // 2, settings.HEIGHT // 4,
+                            arcade.color.GOLDENROD, 30, 0,  "center", 'Comic Sans', True, False,
+                            "center", "center")
+            self.count += 1
+            if self.count >= 50:
+                self.switch = True
+                self.count = 0
+                
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ENTER:
             self.director.next_view()
