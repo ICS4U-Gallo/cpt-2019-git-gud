@@ -8,12 +8,11 @@ import time
 class MenuView(arcade.View):
     def on_show(self):
         arcade.set_background_color(arcade.color.BLACK)
-        self.background = arcade.load_texture(
-            "images/screen_menu_background.png")
+        self.background = settings.BACKGROUND
         self.switch = True
         self.count = 0
-        self.background_music = arcade.load_sound("audio/screen_menu.mp3")
-        self.ring = arcade.load_sound("audio/menu_get.mp3")
+        self.background_music = settings.BACKGROUND_MUSIC
+        self.ring = settings.RING
         arcade.play_sound(self.background_music)
         
     def on_draw(self):

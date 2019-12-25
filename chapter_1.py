@@ -11,11 +11,9 @@ class Chapter1View(arcade.View):
         self.ring_played_male = False
         self.ring_played_female = False
         self.ring_played_chosen  = False
-        self.male = arcade.load_texture("images/char_male.png")
-        self.female = arcade.load_texture("images/char_female.png")
-        self.background_music = arcade.load_sound("audio/screen_menu.mp3")
-        self.ring = arcade.load_sound("audio/menu_get.mp3")
-        arcade.play_sound(self.background_music)
+        self.male = settings.MALE_CHAR
+        self.female = settings.FEMALE_CHAR
+        self.ring = settings.RING
             
     def on_draw(self):
         arcade.start_render()
