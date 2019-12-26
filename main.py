@@ -3,8 +3,10 @@ import arcade
 import settings
 
 from menu import MenuView
+from save_selection import Save_Selection
 from chapter_1 import Chapter1View
 from chapter_2 import Chapter2View
+from test_grid import Grid
 
 
 class Director(arcade.Window):
@@ -13,8 +15,10 @@ class Director(arcade.Window):
         self.view_index = 0
         self.views = [
             MenuView,
+            Save_Selection,
             Chapter1View,
-            Chapter2View
+            Chapter2View,
+            Grid
         ]
         self.next_view()
 
