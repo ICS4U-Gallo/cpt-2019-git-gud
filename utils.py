@@ -1,10 +1,12 @@
 from typing import List, Dict
 from settings import ITEMS, MONEY
 
+
 class FakeDirector:
     """A class to fake the presence of a Director when running
     a view directly.
     """
+
     def __init__(self, close_on_next_view=True):
         """Create a new FakeDirector object.
 
@@ -25,10 +27,10 @@ class Attack():
     attacks = []
 
     def __init__(self, attack: str, attack_power: int,
-                 type: str, attack_audio: str = None):
+                 attack_type: str, attack_audio: str = None):
         self._attack = attack.lower()
         self._attack_power = attack_power
-        self._attack_type = type.lower()
+        self._attack_type = attack_type.lower()
         self._attack_audio = attack_audio
         Attack.attacks.append(self)
 
@@ -160,7 +162,7 @@ class Strengths():
 
     def bug(self, enemy_type: str):
         for T in range(self._bug):
-            if enemy_type.lower() == T: 
+            if enemy_type.lower() == T:
                 return True
             return False
 
@@ -552,7 +554,7 @@ class Battle():
 
 
 def main():
-    
+
     SQUIRTLE = Pokemon("Squirtle", 100, "water", 100,
                        "Bubble gun", 20, "water")
     CHARAMANDER = Pokemon("Charamander", 120, "fire",
