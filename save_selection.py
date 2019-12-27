@@ -1,7 +1,6 @@
 import arcade
 
 import settings
-from chapter_2 import Chapter2View
 
 
 class Save_Selection(arcade.View):
