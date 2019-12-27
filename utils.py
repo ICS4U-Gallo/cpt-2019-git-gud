@@ -34,7 +34,7 @@ class PC(): # IN PROGRESS
         
         for page in range(20):
             for i in range(100):
-                self._stored[i] = ""
+                self._stored[i] = "" # THE ERROR IS THAT IT CHANGES POKEMON INTO A STRING
             self._pages[page] = self._stored
 
 
