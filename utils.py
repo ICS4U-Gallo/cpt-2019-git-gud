@@ -419,7 +419,7 @@ def main():
 
     POKEMONS = [SQUIRTLE, CHARAMANDER, BULBASUAR]
 
-    jeff = Player("jeff", settings.ITEMS, POKEMONS, settings.MONEY)
+    jeff = Player("jeff", ITEMS, POKEMONS, MONEY)
 
     print(jeff.get_pokemons)
 
