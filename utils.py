@@ -585,6 +585,14 @@ class Battle(): # IN PROGRESS
                 return True
 
 
+def Battle(opponent: object):
+    if type(opponent).__name__ == "CPU":
+        pass
+    elif type(opponent).__name__ == "Pokemon":
+        pass
+
+
+
 def main():
     
     SQUIRTLE = Pokemon("Squirtle", 100, "water", 100, True,
