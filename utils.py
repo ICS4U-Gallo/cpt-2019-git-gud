@@ -24,8 +24,18 @@ class FakeDirector:
             exit()
 
 
-class Screen(): # IN PROGRESS
-    pass
+class PC(): # IN PROGRESS
+    # Set dict on each screen
+    # when dict is full, move to next screen
+    # searches and whatnot can be implemented afterwards
+    def __init__(self, pc_pokemons: Dict[int, Pokemon]):
+        self._stored = pc_pokemons
+        self._pages = {}
+        
+        for page in range(20):
+            for i in range(100):
+                self._stored[i] = ""
+            self._pages[page] = self._stored
 
 
 class Attack:
@@ -586,7 +596,6 @@ class Battle(): # IN PROGRESS
 
 
 def main():
-    
     SQUIRTLE = Pokemon("Squirtle", 100, "water", 100, True,
                        "Bubble gun", 20, "water")
     CHARAMANDER = Pokemon("Charamander", 120, False, "fire",
