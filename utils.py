@@ -1,4 +1,5 @@
 from typing import List, Dict
+import random as r
 from settings import ITEMS, MONEY
 
 class FakeDirector:
@@ -68,6 +69,7 @@ class Pokemon(Attack):
         self._hp = hp
         self._type = type.lower()
         self._lvl = lvl
+        self._owned = owned
         self._attack_counter = 1
         self._pokemon_pic = pokemon_pic
         self._pokemon_sound = pokemon_sound
@@ -136,7 +138,7 @@ class Pokemon(Attack):
         pass
 
 
-class Strengths():
+class Strengths(): # IN PROGRESS
     def __init__(self, your_type: str):
         self._type = your_type.lower()
         self._bug = ["grass", "dark", "psychic"]
@@ -308,7 +310,7 @@ class Strengths():
             return "not here"
 
 
-class Weaknesses():
+class Weaknesses(): #IN PROGRESS
     def __init__(self, your_type: str):
         self._type = your_type.lower()
         self._bug = ["fire", "flying", "rock"]
@@ -532,7 +534,7 @@ class Player():
                     del self._pokemons[i]
 
 
-class CPU(Player):
+class CPU(Player): # IN PROGRESS
     def __init__(self, name:  str, pokemons: List[Pokemon],
                  items: Dict[str, int] = None):
         super().__init__(name, pokemons, items)
@@ -542,7 +544,7 @@ class CPU(Player):
             pass
 
 
-class Battle():
+class Battle(): # IN PROGRESS
     turns = 0
 
     def __init__(self, player: Player, cpu: CPU = None, wild_pokemon: Pokemon = None):
@@ -550,14 +552,40 @@ class Battle():
         self._cpu = cpu
         self._wild_pokemon = wild_pokemon
 
+    def catch(self, enemy_hp: int):
+        if self._wild_pokemon != None:
+            if enemy_hp == self._wild_pokemon._hp:
+                if r.randint(1, 100) <= 20:
+                    return True
+                return False
+            elif enemy_hp <= self._wild_pokemon._hp * 0.7:
+                if r.randint(1, 100) <= 40:
+                    return True
+                return False
+            elif enemy_hp <= self._wild_pokemon._hp * 0.5:
+                if r.randint(1, 100) <= 50:
+                    return True
+                return False
+            elif enemy_hp <= self._wild_pokemon._hp * 0.3:
+                if r.randint(1, 100) <= 70:
+                    return True
+                return False
+            elif enemy_hp <= self._wild_pokemon._hp * 0.1:
+                if r.randint(1, 100) <=  90:
+                    return True
+                return False
+            else:
+                return True
+                    
+
 
 def main():
     
-    SQUIRTLE = Pokemon("Squirtle", 100, "water", 100,
+    SQUIRTLE = Pokemon("Squirtle", 100, "water", 100, True,
                        "Bubble gun", 20, "water")
-    CHARAMANDER = Pokemon("Charamander", 120, "fire",
+    CHARAMANDER = Pokemon("Charamander", 120, False, "fire",
                           80, "Flamethrower", 40, "fire")
-    BULBASUAR = Pokemon("Bulbasuar", 110, "grass",
+    BULBASUAR = Pokemon("Bulbasuar", 110, True, "grass",
                         90, "Vine whip", 30, "grass")
 
     print(CHARAMANDER._name)
