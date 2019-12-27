@@ -2,10 +2,12 @@ from typing import List, Dict
 import random as r
 from settings import ITEMS, MONEY
 
+
 class FakeDirector:
     """A class to fake the presence of a Director when running
     a view directly.
     """
+
     def __init__(self, close_on_next_view=True):
         """Create a new FakeDirector object.
 
@@ -22,14 +24,18 @@ class FakeDirector:
             exit()
 
 
-class Attack():
+class Screen(): # IN PROGRESS
+    pass
+
+
+class Attack:
     attacks = []
 
     def __init__(self, attack: str, attack_power: int,
-                 type: str, attack_audio: str = None):
+                 attack_type: str, attack_audio: str = None):
         self._attack = attack.lower()
         self._attack_power = attack_power
-        self._attack_type = type.lower()
+        self._attack_type = attack_type.lower()
         self._attack_audio = attack_audio
         Attack.attacks.append(self)
 
@@ -69,7 +75,6 @@ class Pokemon(Attack):
         self._hp = hp
         self._type = type.lower()
         self._lvl = lvl
-        self._owned = owned
         self._attack_counter = 1
         self._pokemon_pic = pokemon_pic
         self._pokemon_sound = pokemon_sound
@@ -161,113 +166,112 @@ class Strengths(): # IN PROGRESS
         self._water = ["fire", "ground", "rock"]
 
     def bug(self, enemy_type: str):
-        for T in range(self._bug):
-            if enemy_type.lower() == T: 
+        for Type in range(self._bug):
+            if enemy_type.lower() == Type:
                 return True
-            return False
+        return False
 
     def dark(self, enemy_type: str):
-        for T in range(self._dark):
-            if enemy_type.lower() == T:
+        for Type in range(self._dark):
+            if enemy_type.lower() == Type:
                 return True
-            return False
+        return False
 
     def dragon(self, enemy_type: str):
-        for T in range(self._dragon):
-            if enemy_type.lower() == T:
+        for Type in range(self._dragon):
+            if enemy_type.lower() == Type:
                 return True
-            return False
+        return False
 
     def electric(self, enemy_type: str):
-        for T in range(self._electric):
-            if enemy_type.lower() == T:
+        for Type in range(self._electric):
+            if enemy_type.lower() == Type:
                 return True
-            return False
+        return False
 
     def fairy(self, enemy_type: str):
-        for T in range(self._fairy):
-            if enemy_type.lower() == T:
+        for Type in range(self._fairy):
+            if enemy_type.lower() == Type:
                 return True
-            return False
+        return False
 
     def fighting(self, enemy_type: str):
-        for T in range(self._fighting):
-            if enemy_type.lower() == T:
+        for Type in range(self._fighting):
+            if enemy_type.lower() == Type:
                 return True
-            return False
+        return False
 
     def fire(self, enemy_type: str):
-        for T in range(self._fire):
-            if enemy_type.lower() == T:
+        for Type in range(self._fire):
+            if enemy_type.lower() == Type:
                 return True
-            return False
+        return False
 
     def flying(self, enemy_type: str):
-        for T in range(self._flying):
-            if enemy_type.lower() == T:
+        for Type in range(self._flying):
+            if enemy_type.lower() == Type:
                 return True
-            return False
+        return False
 
     def ghost(self, enemy_type: str):
-        for T in range(self._ghost):
-            if enemy_type.lower() == T:
+        for Type in range(self._ghost):
+            if enemy_type.lower() == Type:
                 return True
-            return False
+        return False
 
     def grass(self, enemy_type: str):
-        for T in range(self._grass):
-            if enemy_type.lower() == T:
+        for Type in range(self._grass):
+            if enemy_type.lower() == Type:
                 return True
-            return False
+        return False
 
     def ground(self, enemy_type: str):
-        for T in range(self._ground):
-            if enemy_type.lower() == T:
+        for Type in range(self._ground):
+            if enemy_type.lower() == Type:
                 return True
-            return False
+        return False
 
     def ice(self, enemy_type: str):
-        for T in range(self._ice):
-            if enemy_type.lower() == T:
+        for Type in range(self._ice):
+            if enemy_type.lower() == Type:
                 return True
-            return False
+        return False
 
     def normal(self, enemy_type: str):
-        for T in range(self.normal):
-            if enemy_type.lower() == T:
+        for Type in range(self.normal):
+            if enemy_type.lower() == Type:
                 return True
-            return False
+        return False
 
     def poison(self, enemy_type: str):
-        for T in range(self._poison):
-            if enemy_type.lower() == T:
+        for Type in range(self._poison):
+            if enemy_type.lower() == Type:
                 return True
-            return False
+        return False
 
     def psychic(self, enemy_type: str):
-        for T in range(self._psychic):
-            if enemy_type.lower() == T:
+        for Type in range(self._psychic):
+            if enemy_type.lower() == Type:
                 return True
-            return False
+        return False
 
     def rock(self, enemy_type: str):
-        for T in range(self._rock):
-            if enemy_type.lower() == T:
+        for Type in range(self._rock):
+            if enemy_type.lower() == Type:
                 return True
-            return False
+        return False
 
     def steel(self, enemy_type: str):
-        for T in range(self._steel):
-            if enemy_type.lower() == T:
+        for Type in range(self._steel):
+            if enemy_type.lower() == Type:
                 return True
-            return False
+        return False
 
     def water(self, enemy_type: str):
-        for T in range(self._water):
-            if enemy_type.lower() == T:
+        for Type in range(self._water):
+            if enemy_type.lower() == Type:
                 return True
-        else:
-            return False
+        return False
 
     def strength(self, enemy_type: str):
         if self._type == "bug":
@@ -333,112 +337,112 @@ class Weaknesses(): #IN PROGRESS
         self._water = ["electric", "grass"]
 
     def bug(self, enemy_type: str):
-        for T in range(self._bug):
-            if enemy_type.lower() == T:
+        for Type in range(self._bug):
+            if enemy_type.lower() == Type:
                 return True
-            return False
+        return False
 
     def dark(self, enemy_type: str):
-        for T in range(self._dark):
-            if enemy_type.lower() == T:
+        for Type in range(self._dark):
+            if enemy_type.lower() == Type:
                 return True
-            return False
+        return False
 
     def dragon(self, enemy_type: str):
-        for T in range(self._dragon):
-            if enemy_type.lower() == T:
+        for Type in range(self._dragon):
+            if enemy_type.lower() == Type:
                 return True
-            return False
+        return False
 
     def electric(self, enemy_type: str):
-        for T in range(self._electric):
-            if enemy_type.lower() == T:
+        for Type in range(self._electric):
+            if enemy_type.lower() == Type:
                 return True
-            return False
+        return False
 
     def fairy(self, enemy_type: str):
-        for T in range(self._fairy):
-            if enemy_type.lower() == T:
+        for Type in range(self._fairy):
+            if enemy_type.lower() == Type:
                 return True
-            return False
+        return False
 
     def fighting(self, enemy_type: str):
-        for T in range(self._fighting):
-            if enemy_type.lower() == T:
+        for Type in range(self._fighting):
+            if enemy_type.lower() == Type:
                 return True
-            return False
+        return False
 
     def fire(self, enemy_type: str):
-        for T in range(self._fire):
-            if enemy_type.lower() == T:
+        for Type in range(self._fire):
+            if enemy_type.lower() == Type:
                 return True
-            return False
+        return False
 
     def flying(self, enemy_type: str):
-        for T in range(self._flying):
-            if enemy_type.lower() == T:
+        for Type in range(self._flying):
+            if enemy_type.lower() == Type:
                 return True
-            return False
+        return False
 
     def ghost(self, enemy_type: str):
-        for T in range(self._ghost):
-            if enemy_type.lower() == T:
+        for Type in range(self._ghost):
+            if enemy_type.lower() == Type:
                 return True
-            return False
+        return False
 
     def grass(self, enemy_type: str):
-        for T in range(self._grass):
-            if enemy_type.lower() == T:
+        for Type in range(self._grass):
+            if enemy_type.lower() == Type:
                 return True
-            return False
+        return False
 
     def ground(self, enemy_type: str):
-        for T in range(self._ground):
-            if enemy_type.lower() == T:
+        for Type in range(self._ground):
+            if enemy_type.lower() == Type:
                 return True
-            return False
+        return False
 
     def ice(self, enemy_type: str):
-        for T in range(self._ice):
-            if enemy_type.lower() == T:
+        for Type in range(self._ice):
+            if enemy_type.lower() == Type:
                 return True
-            return False
+        return False
 
     def normal(self, enemy_type: str):
-        for T in range(self.normal):
-            if enemy_type.lower() == T:
+        for Type in range(self.normal):
+            if enemy_type.lower() == Type:
                 return True
-            return False
+        return False
 
     def poison(self, enemy_type: str):
-        for T in range(self._poison):
-            if enemy_type.lower() == T:
+        for Type in range(self._poison):
+            if enemy_type.lower() == Type:
                 return True
-            return False
+        return False
 
     def psychic(self, enemy_type: str):
-        for T in range(self._psychic):
-            if enemy_type.lower() == T:
+        for Type in range(self._psychic):
+            if enemy_type.lower() == Type:
                 return True
-            return False
+        return False
 
     def rock(self, enemy_type: str):
-        for T in range(self._rock):
-            if enemy_type.lower() == T:
+        for Type in range(self._rock):
+            if enemy_type.lower() == Type:
                 return True
-            return False
+        return False
 
     def steel(self, enemy_type: str):
-        for T in range(self._steel):
-            if enemy_type.lower() == T:
+        for Type in range(self._steel):
+            if enemy_type.lower() == Type:
                 return True
-            return False
+        return False
 
     def water(self, enemy_type: str):
-        for T in range(self._water):
-            if enemy_type.lower() == T:
+        for Type in range(self._water):
+            if enemy_type.lower() == Type:
                 return True
-            return False
+        return False
 
     def weaknesses(self, enemy_type: str):
         if self._type == "bug":
@@ -477,38 +481,44 @@ class Weaknesses(): #IN PROGRESS
             return self.steel(enemy_type)
         elif self._type == "water":
             return self.water(enemy_type)
-        else:
-            return "not here"
 
 
-class Player():
+class Trainer:
     def __init__(self, name: str, pokemons: List[Pokemon],
                  items: Dict[str, int] = None, money: int = None):
         self._name = name.lower()
         self._pokemons = pokemons
         self._items = items
-        self._money = money
-
-    def set_name(self, name: str):
-        self._name = name.lower()
 
     def get_name(self):
         return self._name
 
+    def set_name(self, name: str):
+        self._name = name.lower()
+
     def get_items(self):
         return self._items
-
-    def add_item(self, item: str, amount: int):
-        self._items[item.capitalize()] += amount
 
     def remove_item(self, item: str, amount: int):
         self._items[item.capitalize()] -= amount
 
-    def set_money(self, money: int):
+    def get_pokemons(self):
+        return self._pokemons
+
+
+class Player(Trainer):
+    def __init__(self, name, pokemons, items=None, money=None):
+        super().__init__(name, pokemons, items=items, money=money)
         self._money = money
+
+    def add_item(self, item: str, amount: int):
+        self._items[item.capitalize()] += amount
 
     def get_money(self):
         return self._money
+
+    def set_money(self, money: int):
+        self._money = money
 
     def add_money(self, amount: int):
         self._money += amount
@@ -516,16 +526,13 @@ class Player():
     def subtract_money(self, amount: int):
         self._money -= amount
 
-    def get_pokemons(self):
-        return self._pokemons
-
     def add_pokemon(self, pokemon: Pokemon):
         if len(self._pokemons) <= 6:
             self._pokemons.append(pokemon)
         else:
-            return ValueError("Too many pokemon. Max: 6")
+            return ValueError("Too many pokemon. Max: 6") #place in pc
 
-    def remove_pokemon(self, name: str):
+    def release_pokemon(self, name: str):
         if len(self._pokemons) == 1:
             return ValueError("Cannot remove last pokemon. Min: 1")
         else:
@@ -534,7 +541,7 @@ class Player():
                     del self._pokemons[i]
 
 
-class CPU(Player): # IN PROGRESS
+class CPU(Trainer): # IN PROGRESS
     def __init__(self, name:  str, pokemons: List[Pokemon],
                  items: Dict[str, int] = None):
         super().__init__(name, pokemons, items)
@@ -552,7 +559,7 @@ class Battle(): # IN PROGRESS
         self._cpu = cpu
         self._wild_pokemon = wild_pokemon
 
-    def catch(self, enemy_hp: int):
+    def catch(self, enemy_hp: int): # APPEND TO PC IF CAUGHT AND POKESLOTS ARE FULL
         if self._wild_pokemon != None:
             if enemy_hp == self._wild_pokemon._hp:
                 if r.randint(1, 100) <= 20:
