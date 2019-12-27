@@ -583,7 +583,6 @@ class Battle(): # IN PROGRESS
                 return False
             else:
                 return True
-                    
 
 
 def main():
