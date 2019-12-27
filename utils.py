@@ -398,7 +398,7 @@ class Weaknesses():
 
     def ice(self, enemy_type: str):
         for T in range(self._ice):
-            if enemy_type.lower() == type:
+            if enemy_type.lower() == T:
                 return True
             return False
 
@@ -438,7 +438,7 @@ class Weaknesses():
                 return True
             return False
 
-    def (self, enemy_type: str):
+    def weaknesses(self, enemy_type: str):
         if self._type == "bug":
             return self.bug(enemy_type)
         elif self._type == "dark":
