@@ -19,7 +19,7 @@ class Director(arcade.Window):
             Chapter1View,
             Chapter2View,
             Grid
-        ]
+            ]
         self.next_view()
 
     def next_view(self):
