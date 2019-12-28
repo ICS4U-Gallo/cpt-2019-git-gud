@@ -22,13 +22,18 @@ class FakeDirector:
         print("SCENE COMPLETE.")
         if self._exit_on_complete:
             exit()
+    
+    def specific_view(self, view) -> None:
+        print("SCENE COMPLETE.")
+        if self._exit_on_complete:
+            exit()
 
 
 class PC(): # IN PROGRESS
     # Set dict on each screen
     # when dict is full, move to next screen
     # searches and whatnot can be implemented afterwards
-    def __init__(self, pc_pokemons: Dict[int, Pokemon]):
+    def __init__(self, pc_pokemons: Dict[int, object]):
         self._stored = pc_pokemons
         self._pages = {}
         
@@ -595,11 +600,11 @@ class Battle(): # IN PROGRESS
                 return True
 
 
-def Battle(opponent: object):
-    if type(opponent).__name__ == "CPU":
-        pass
-    elif type(opponent).__name__ == "Pokemon":
-        pass
+# def Battle(opponent: object):
+#     if type(opponent).__name__ == "CPU":
+#         pass
+#     elif type(opponent).__name__ == "Pokemon":
+#         pass
 
 
 

@@ -2,7 +2,11 @@ import arcade
 
 import settings
 
+import os
+
 import time
+
+from chapter_1 import Chapter1View
 
 
 class MenuView(arcade.View):
@@ -43,7 +47,10 @@ class MenuView(arcade.View):
         if key == arcade.key.ENTER:
             arcade.play_sound(self.ring)
             arcade.pause(0.6)
-            self.director.next_view()
+            if len(os.listdir("saves")) == 0:
+                self.director.specific_view(Chapter1View)
+            else:
+                self.director.next_view()
             
 
 if __name__ == "__main__":

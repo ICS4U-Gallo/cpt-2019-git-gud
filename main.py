@@ -3,7 +3,7 @@ import arcade
 import settings
 
 from menu import MenuView
-from save_selection import Save_Selection
+from load_file import LoadFile
 from chapter_1 import Chapter1View
 from chapter_2 import Chapter2View
 from test_grid import Grid
@@ -15,7 +15,7 @@ class Director(arcade.Window):
         self.view_index = 0
         self.views = [
             MenuView,
-            Save_Selection,
+            LoadFile,
             Chapter1View,
             Chapter2View,
             Grid
@@ -27,6 +27,12 @@ class Director(arcade.Window):
         next_view.director = self
         self.show_view(next_view)
         self.view_index = (self.view_index + 1) % len(self.views)
+    
+    def specific_view(self, view):
+        specific_view = view()
+        specific_view.director = self
+        self.show_view(specific_view)
+        self.view_index = self.views.index(view)
 
 
 def main():
