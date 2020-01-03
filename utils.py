@@ -24,20 +24,6 @@ class FakeDirector:
             exit()
 
 
-class PC(): # IN PROGRESS
-    # Set dict on each screen
-    # when dict is full, move to next screen
-    # searches and whatnot can be implemented afterwards
-    def __init__(self, pc_pokemons: Dict[int, Pokemon]):
-        self._stored = pc_pokemons
-        self._pages = {}
-        
-        for page in range(20):
-            for i in range(100):
-                self._stored[i] = "" # THE ERROR IS THAT IT CHANGES POKEMON INTO A STRING
-            self._pages[page] = self._stored
-
-
 class Attack:
     attacks = []
 
@@ -593,6 +579,22 @@ class Battle(): # IN PROGRESS
                 return False
             else:
                 return True
+
+
+class PC(): # IN PROGRESS
+    # Set dict on each screen
+    # when dict is full, move to next screen
+    # searches and whatnot can be implemented afterwards
+    def __init__(self):
+        self._stored = {}
+        self._pages = {}
+    
+    def store_pokemon(self, pokemon: Pokemon):
+                
+        for page in range(20):
+            for i in range(100):
+                self._stored[i] = ""
+            self._pages[page] = self._stored
 
 
 def main():
