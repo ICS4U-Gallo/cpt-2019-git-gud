@@ -29,20 +29,6 @@ class FakeDirector:
             exit()
 
 
-class PC(): # IN PROGRESS
-    # Set dict on each screen
-    # when dict is full, move to next screen
-    # searches and whatnot can be implemented afterwards
-    def __init__(self, pc_pokemons: Dict[int, object]):
-        self._stored = pc_pokemons
-        self._pages = {}
-        
-        for page in range(20):
-            for i in range(100):
-                self._stored[i] = "" # THE ERROR IS THAT IT CHANGES POKEMON INTO A STRING
-            self._pages[page] = self._stored
-
-
 class Attack:
     attacks = []
 
@@ -158,7 +144,7 @@ class Pokemon(Attack):
         pass
 
 
-class Strengths(): # IN PROGRESS
+class Strengths():
     def __init__(self, your_type: str):
         self._type = your_type.lower()
         self._bug = ["grass", "dark", "psychic"]
@@ -329,7 +315,7 @@ class Strengths(): # IN PROGRESS
             return "not here"
 
 
-class Weaknesses(): #IN PROGRESS
+class Weaknesses():
     def __init__(self, your_type: str):
         self._type = your_type.lower()
         self._bug = ["fire", "flying", "rock"]
@@ -556,6 +542,24 @@ class Player(Trainer):
                     del self._pokemons[i]
 
 
+class PC():  # IN PROGRESS
+    # Set dict on each screen
+    # when dict is full, move to next screen
+    # searches and whatnot can be implemented afterwards
+    def __init__(self):
+        self._stored = {}
+        self._pages = {}
+
+        for page in range(20):
+            for i in range(100):
+                self._stored[i] = None
+            self._pages[page] = self._stored
+
+    def add_pokemon(self, page_number: int, place_number: int, pokemon: Pokemon):
+        for empty in self._stored[page_number]:
+            pass
+        
+
 class CPU(Trainer): # IN PROGRESS
     def __init__(self, name:  str, pokemons: List[Pokemon],
                  items: Dict[str, int] = None):
@@ -609,11 +613,11 @@ class Battle(): # IN PROGRESS
 
 
 def main():
-    SQUIRTLE = Pokemon("Squirtle", 100, "water", 100, True,
+    SQUIRTLE = Pokemon("Squirtle", 100, "water", 100,
                        "Bubble gun", 20, "water")
-    CHARAMANDER = Pokemon("Charamander", 120, False, "fire",
+    CHARAMANDER = Pokemon("Charamander", 120, "fire",
                           80, "Flamethrower", 40, "fire")
-    BULBASUAR = Pokemon("Bulbasuar", 110, True, "grass",
+    BULBASUAR = Pokemon("Bulbasuar", 110, "grass",
                         90, "Vine whip", 30, "grass")
 
     print(CHARAMANDER._name)
