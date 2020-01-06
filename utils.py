@@ -548,7 +548,7 @@ class PC():  # IN PROGRESS
     # searches and whatnot can be implemented afterwards
     def __init__(self):
         self._stored = {}
-        self._pages = {}
+        self._pages = []
 
         for page in range(20):
             for i in range(100):
