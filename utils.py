@@ -29,6 +29,36 @@ class FakeDirector:
             exit()
 
 
+def remove_from_file_name(string):
+    try:
+        string = int(string)
+    except:
+        pass
+    else:
+        return string
+    
+    if string == ".json":
+        return ""
+    elif string[0] == "_":
+        return " " + remove_from_file_name(string[1:])
+    else:
+        return string[0] + remove_from_file_name(string[1:])
+
+
+class PC(): # IN PROGRESS
+    # Set dict on each screen
+    # when dict is full, move to next screen
+    # searches and whatnot can be implemented afterwards
+    def __init__(self, pc_pokemons: Dict[int, object]):
+        self._stored = pc_pokemons
+        self._pages = {}
+        
+        for page in range(20):
+            for i in range(100):
+                self._stored[i] = "" # THE ERROR IS THAT IT CHANGES POKEMON INTO A STRING
+            self._pages[page] = self._stored
+
+
 class Attack:
     attacks = []
 

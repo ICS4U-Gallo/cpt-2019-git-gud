@@ -1,5 +1,6 @@
 import arcade
 import settings
+import utils
 import os
 import json
 from test_grid import Grid
@@ -12,7 +13,8 @@ class LoadFile(arcade.View):
         if not settings.load_saves:
             self.saves = {0: None, 1: None, 2: None}
             for i in range(len(os.listdir("saves"))):
-                self.saves[i] = os.listdir("saves")[i]
+                save_file = os.listdir("saves")[i]
+                self.saves[i] = utils.remove_from_file_name(save_file)
             settings.load_saves = True
 
         self.indicator_y = settings.HEIGHT//2 + 192
@@ -44,7 +46,7 @@ class LoadFile(arcade.View):
         arcade.draw_rectangle_outline(settings.WIDTH//2, settings.HEIGHT//2 + 30, 500, 120, arcade.color.BLACK, border_width=3)
         arcade.draw_rectangle_outline(settings.WIDTH//2, settings.HEIGHT//2 - 90, 500, 120, arcade.color.BLACK, border_width=3)
 
-        arcade.draw_rectangle_outline(settings.WIDTH//2 - 200, self.indicator_y, 86, 20, arcade.color.GOLD, border_width=2)
+        arcade.draw_rectangle_outline(settings.WIDTH//2 - 206, self.indicator_y, 76, 20, arcade.color.GOLD, border_width=2)
 
         arcade.draw_rectangle_filled(settings.WIDTH//2, 60, settings.WIDTH, 120, arcade.color.WHITE)
         arcade.draw_rectangle_outline(settings.WIDTH//2, 60, settings.WIDTH - 3, 120, arcade.color.BLACK, 3)

@@ -2,22 +2,20 @@ import arcade
 
 import settings
 
-# AM WORKING ON IT PLS DW ILL FIX THE SELECTION AND MAKE IT WORKABLE SOON I PROMISE
-# - JOSH
-
 
 class Chapter2View(arcade.View):
     def on_show(self):
         arcade.set_background_color(arcade.color.AMAZON)
-        self.example_rects = [0,   1,   2 ,  3,   4,   5,
-                                           6,   7,   8,   9,   10, 11,
-                                           12, 13, 14, 15, 16, 17,
-                                           18, 19, 20, 21, 22, 23,
-                                           24, 25, 26, 27, 28, 29]
+        self.example_rects = [0, 1, 2 , 3, 4, 5,
+                              6, 7, 8, 9, 10, 11,
+                              12, 13, 14, 15, 16, 17,
+                              18, 19, 20, 21, 22, 23,
+                              24, 25, 26, 27, 28, 29]
         self.selected_rect_x = 0
         self.selected_rect_y = 0
         self.pos_rect_x = 0
         self.pos_rect_y = 0
+        self.character_location = 1
         
 
     def on_draw(self):
@@ -33,56 +31,49 @@ class Chapter2View(arcade.View):
                                       settings.WIDTH // 1.1,  settings.HEIGHT // 1.25,
                                       arcade.color.BLACK, 5)
         
-        arcade.draw_rectangle_outline(settings.WIDTH - 703 + self.selected_rect_x * (settings.WIDTH // 1.1) // 6,
-                                      settings.HEIGHT - 122 - self.selected_rect_y * (settings.HEIGHT // 2.2) // 4,
+        arcade.draw_rectangle_outline(settings.WIDTH - 703 + self.selected_rect_x,
+                                      settings.HEIGHT - 122 - self.selected_rect_y,
                                       (settings.WIDTH // 1.1) // 6, (settings.HEIGHT // 2.2) // 4,
                                       arcade.color.GOLD, 5)
         
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.RIGHT:
-            if self.selected_rect_x % 6 == 5:
-                self.pos_rect_x -= 5
-                self.selected_rect_x -= 5
-                print(self.selected_rect_x)
-            else:
+            if self.pos_rect_x != 5:
+                self.selected_rect_x += 121.3
                 self.pos_rect_x += 1
-                self.selected_rect_x += 1
-                print(self.selected_rect_x)
+                self.character_location += 1
+            elif self.pos_rect_y !=6:
+                self.selected_rect_x = 0
+                self.pos_rect_x = 0
+                self.selected_rect_y += 68.6
+                self.pos_rect_y += 1
+                self.character_location += 1
         
         if key == arcade.key.LEFT:
-            if self.selected_rect_x % 6 == 0:
-                self.pos_rect_x += 5
-                self.selected_rect_x += 5
-                print(self.selected_rect_x)
-            else:
+            if self.pos_rect_x != 0:
+                self.selected_rect_x -= 121.3
                 self.pos_rect_x -= 1
-                self.selected_rect_x -= 1
-                print(self.selected_rect_x)
+                self.character_location -= 1
+            elif self.pos_rect_y != 0:
+                self.selected_rect_x = 121.3 * 5
+                self.pos_rect_x = 5
+                self.selected_rect_y -= 68.6
+                self.pos_rect_y -= 1
+                self.character_location -= 1
         
         if key == arcade.key.UP:
-            if self.pos_rect_y % 6 <= 5 and self.pos_rect_x <= 5:
-                self.selected_rect_y += 6
-                self.pos_rect_y += 24
-                self.pos_rect_x += 24
-                print(self.selected_rect_y)
-            else:
-                self.pos_rect_y -= 6
-                self.selected_rect_y -= 1
-                self.pos_rect_x -=6
-                print(self.selected_rect_y)
+            if self.pos_rect_y != 0:
+                self.selected_rect_y -= 68.6
+                self.pos_rect_y -= 1
+                self.character_location -= 6
         
         if key == arcade.key.DOWN:
-            if self.pos_rect_y % 6 <= 5 and self.pos_rect_x >= 24:
-                self.selected_rect_y -= 6
-                self.pos_rect_y -= 24
-                self.pos_rect_x -= 24
-                print(self.selected_rect_y)
-            else:
-                self.pos_rect_y += 6
-                self.selected_rect_y += 1
-                self.pos_rect_x += 6
-                print(self.selected_rect_y)
+            if self.pos_rect_y != 6:
+                self.selected_rect_y += 68.6
+                self.pos_rect_y += 1
+                self.character_location +=6
+            
                 
                 
                 
