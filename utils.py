@@ -29,6 +29,21 @@ class FakeDirector:
             exit()
 
 
+def remove_from_file_name(string):
+    try:
+        string = int(string)
+    except:
+        pass
+    else:
+        return string
+    
+    if string == ".json":
+        return ""
+    elif string[0] == "_":
+        return " " + remove_from_file_name(string[1:])
+    else:
+        return string[0] + remove_from_file_name(string[1:])
+
 
 class Attack:
     attacks = []
