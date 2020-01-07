@@ -31,8 +31,9 @@ class Chapter2View(arcade.View):
                                       (settings.WIDTH //
                                        1.1) // 6, (settings.HEIGHT // 2.2) // 4,
                                       arcade.color.GOLD, 5)
+
         row = 0
-        column = 0                      
+        column = 0
         for i in range(26):
             if i != 0:
                 if i % 6 == 0 and i != 0:
