@@ -60,3 +60,5 @@
 
 - Battling
   - Undertale
+
+- Pokemon Rumble (purify shadow pokemons)

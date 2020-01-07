@@ -21,7 +21,7 @@ class LoadFile(arcade.View):
         self.selected = False
         self.confirmation = True
         self.confirmation_indicator = {
-            "YES": arcade.color.RED, "NO": arcade.color.BLACK}
+            "YES": arcade.color.GOLD, "NO": arcade.color.BLACK}
 
     def on_draw(self):
         arcade.start_render()
@@ -77,7 +77,7 @@ class LoadFile(arcade.View):
             if self.selected:
                 self.confirmation = True
                 self.confirmation_indicator = {
-                    "YES": arcade.color.RED, "NO": arcade.color.BLACK}
+                    "YES": arcade.color.GOLD, "NO": arcade.color.BLACK}
             elif self.selection > 0:
                 self.file_indicator += 120
                 self.selection -= 1
@@ -86,7 +86,7 @@ class LoadFile(arcade.View):
             if self.selected:
                 self.confirmation = False
                 self.confirmation_indicator = {
-                    "YES": arcade.color.BLACK, "NO": arcade.color.RED}
+                    "YES": arcade.color.BLACK, "NO": arcade.color.GOLD}
             elif self.selection < 2:
                 self.file_indicator -= 120
                 self.selection += 1
@@ -98,7 +98,7 @@ class LoadFile(arcade.View):
                 if self.confirmation is False:
                     self.selected = False
                     self.confirmation_indicator = {
-                        "YES": arcade.color.RED, "NO": arcade.color.BLACK}
+                        "YES": arcade.color.GOLD, "NO": arcade.color.BLACK}
                     self.confirmation = True
                 elif self.saves[self.selection] is None:
                     self.director.next_view()
