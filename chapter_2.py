@@ -31,6 +31,16 @@ class Chapter2View(arcade.View):
                                       (settings.WIDTH //
                                        1.1) // 6, (settings.HEIGHT // 2.2) // 4,
                                       arcade.color.GOLD, 5)
+        x_count = 0
+        y_count = 0                      
+        for i in range(26):
+            if i != 0:
+                if i % 6 == 0 and i != 0:
+                    y_count += 1
+                    x_count = 0
+                else:
+                    x_count += 1
+            arcade.draw_text(self.characters[i], settings.WIDTH - 703 + x_count * 121.3, settings.HEIGHT - 122 - y_count * 68.6, arcade.color.BLACK, 14, align="center")
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.RIGHT:
