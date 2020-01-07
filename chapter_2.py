@@ -34,7 +34,7 @@ class Chapter2View(arcade.View):
 
         row = 0
         column = 0
-        for i in range(26):
+        for i in range(len(self.characters)):
             if i != 0:
                 if i % 6 == 0 and i != 0:
                     column += 1
