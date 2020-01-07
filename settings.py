@@ -4,6 +4,7 @@ from typing import List, Dict
 WIDTH = 800
 HEIGHT = 600
 load_saves = False
+info = None
 BACKGROUND = arcade.load_texture("images/screen_menu_background.png")
 MALE_CHAR = arcade.load_texture("images/char_male.png")
 FEMALE_CHAR = arcade.load_texture("images/char_female.png")
