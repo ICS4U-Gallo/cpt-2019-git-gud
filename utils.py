@@ -1,6 +1,6 @@
 from typing import List, Dict
 import random as r
-from settings import ITEMS, MONEY
+from settings
 
 
 class FakeDirector:
@@ -22,7 +22,7 @@ class FakeDirector:
         print("SCENE COMPLETE.")
         if self._exit_on_complete:
             exit()
-    
+
     def specific_view(self, view) -> None:
         print("SCENE COMPLETE.")
         if self._exit_on_complete:
@@ -36,7 +36,7 @@ def remove_from_file_name(string):
         pass
     else:
         return string
-    
+
     if string == ".json":
         return ""
     elif string[0] == "_":
@@ -81,70 +81,45 @@ class Attack:
         return self._attack_audio
 
 
-class Pokemon(Attack):
-    def __init__(self, name: str, hp: int, type: str, lvl: int,
-                 attack_one: str, attack_one_power: int, attack_one_type: str,
-                 attack_one_audio: str = None, pokemon_pic: str = None,
-                 pokemon_sound: str = None, passive: str = None):
-        super().__init__(attack_one, attack_one_power,
-                         attack_one_type, attack_one_audio)
-        self._name = name.lower()
-        self._hp = hp
-        self._type = type.lower()
-        self._lvl = lvl
-        self._attack_counter = 1
-        self._pokemon_pic = pokemon_pic
-        self._pokemon_sound = pokemon_sound
-        self._passive = passive
-        self._item = None
-
-    def set_name(self, name: str):
-        self._name = name.lower()
+class Pokemon:
+    def __init__(self, name, health_points, Type, passive_ability, moveset,
+                 image, sound, level, experience_points=0, item=None):
+        self._name = name
+        self._hp = health_points
+        self._type = Type.lower()
+        self._passive = passive_ability
+        self._moveset = moveset
+        self._image = image
+        self._lvl = level
+        self._exp = experience_points
+        self._item = item
 
     def get_name(self):
         return self._name
 
-    def set_hp(self, hp: int):
-        self._hp = hp
+    def set_name(self, name: str):
+        self._name = name.lower()
 
     def get_hp(self):
         return self._hp
 
-    def set_type(self, type: str):
-        self._type = type.lower()
+    def set_hp(self, hp: int):
+        self._hp = hp
 
     def get_type(self):
         return self._type
 
-    def set_lvl(self, lvl: int):
-        self._lvl = lvl
-
-    def get_lvl(self):
-        return self._lvl
-
-    def set_passive(self, passive: str):
-        self._passive = passive.lower()
+    def set_type(self, type: str):
+        self._type = type.lower()
 
     def get_passive(self):
         return self._passive
 
-    def set_item(self, item: str):
-        self._item = item.capitalize()
+    def set_passive(self, passive: str):
+        self._passive = passive.lower()
 
-    def get_item(self):
-        return self._item
-
-    def set_pokemon_pic(self, file: str):
-        self._pokemon_pic = file
-
-    def get_pokemon_pic(self):
-        return self._pokemon_pic
-
-    def set_pokemon_sound(self, audio: str):
-        self._pokemon_sound = audio
-
-    def get_pokemon_sound(self):
-        return self._pokemon_sound
+    def get_moveset(self, attack: int):
+        return Attack.attacks[attack]
 
     def add_attack(self, attack: str, power: int,
                    type: str, audio=None):
@@ -153,351 +128,35 @@ class Pokemon(Attack):
         else:
             raise ValueError("Maximum attacks reached. Max: 4")
 
-    def get_attack(self, attack: int):
-        return Attack.attacks[attack]
+    def get_pokemon_pic(self):
+        return self._pokemon_pic
 
-    def attack(self, enemy: str):
-        pass
+    def set_pokemon_pic(self, file: str):
+        self._pokemon_pic = file
 
+    def get_pokemon_sound(self):
+        return self._pokemon_sound
 
-class Strengths():
-    def __init__(self, your_type: str):
-        self._type = your_type.lower()
-        self._bug = ["grass", "dark", "psychic"]
-        self._dark = ["ghost", "psychic"]
-        self._dragon = ["dragon"]
-        self._electric = ["flying", "water"]
-        self._fairy = ["fighting", "dark", "dragon"]
-        self._fighting = ["dark", "ice", "normal", "steel"]
-        self._fire = ["bug", "grass", "ice", "steel"]
-        self._flying = ["bug", "fighting", "grass"]
-        self._ghost = ["ghost", "psychic"]
-        self._grass = ["ground", "rock", "water"]
-        self._ground = ["electric", "fire", "poison", "rock", "steel"]
-        self._ice = ["dragon", "flying", "grass", "ground"]
-        self._normal = []
-        self._poison = ["fairy", "grass"]
-        self._psychic = ["fighting", "poison"]
-        self._rock = ["bug", "fire", "flying", "ice"]
-        self._steel = ["fairy", "ice", "rock"]
-        self._water = ["fire", "ground", "rock"]
+    def set_pokemon_sound(self, audio: str):
+        self._pokemon_sound = audio
 
-    def bug(self, enemy_type: str):
-        for Type in range(self._bug):
-            if enemy_type.lower() == Type:
-                return True
-        return False
+    def get_lvl(self):
+        return self._lvl
 
-    def dark(self, enemy_type: str):
-        for Type in range(self._dark):
-            if enemy_type.lower() == Type:
-                return True
-        return False
+    def set_lvl(self, lvl: int):
+        self._lvl = lvl
 
-    def dragon(self, enemy_type: str):
-        for Type in range(self._dragon):
-            if enemy_type.lower() == Type:
-                return True
-        return False
+    def get_exp(self):
+        return self._exp
 
-    def electric(self, enemy_type: str):
-        for Type in range(self._electric):
-            if enemy_type.lower() == Type:
-                return True
-        return False
+    def set_exp(self, points: int):
+        self.set_exp = points
 
-    def fairy(self, enemy_type: str):
-        for Type in range(self._fairy):
-            if enemy_type.lower() == Type:
-                return True
-        return False
+    def get_item(self):
+        return self._item
 
-    def fighting(self, enemy_type: str):
-        for Type in range(self._fighting):
-            if enemy_type.lower() == Type:
-                return True
-        return False
-
-    def fire(self, enemy_type: str):
-        for Type in range(self._fire):
-            if enemy_type.lower() == Type:
-                return True
-        return False
-
-    def flying(self, enemy_type: str):
-        for Type in range(self._flying):
-            if enemy_type.lower() == Type:
-                return True
-        return False
-
-    def ghost(self, enemy_type: str):
-        for Type in range(self._ghost):
-            if enemy_type.lower() == Type:
-                return True
-        return False
-
-    def grass(self, enemy_type: str):
-        for Type in range(self._grass):
-            if enemy_type.lower() == Type:
-                return True
-        return False
-
-    def ground(self, enemy_type: str):
-        for Type in range(self._ground):
-            if enemy_type.lower() == Type:
-                return True
-        return False
-
-    def ice(self, enemy_type: str):
-        for Type in range(self._ice):
-            if enemy_type.lower() == Type:
-                return True
-        return False
-
-    def normal(self, enemy_type: str):
-        for Type in range(self.normal):
-            if enemy_type.lower() == Type:
-                return True
-        return False
-
-    def poison(self, enemy_type: str):
-        for Type in range(self._poison):
-            if enemy_type.lower() == Type:
-                return True
-        return False
-
-    def psychic(self, enemy_type: str):
-        for Type in range(self._psychic):
-            if enemy_type.lower() == Type:
-                return True
-        return False
-
-    def rock(self, enemy_type: str):
-        for Type in range(self._rock):
-            if enemy_type.lower() == Type:
-                return True
-        return False
-
-    def steel(self, enemy_type: str):
-        for Type in range(self._steel):
-            if enemy_type.lower() == Type:
-                return True
-        return False
-
-    def water(self, enemy_type: str):
-        for Type in range(self._water):
-            if enemy_type.lower() == Type:
-                return True
-        return False
-
-    def strength(self, enemy_type: str):
-        if self._type == "bug":
-            return self.bug(enemy_type)
-        elif self._type == "dark":
-            return self.dark(enemy_type)
-        elif self._type == "dragon":
-            return self.dragon(enemy_type)
-        elif self._type == "electric":
-            return self.electric(enemy_type)
-        elif self._type == "fairy":
-            return self.fairy(enemy_type)
-        elif self._type == "fighting":
-            return self.fighting(enemy_type)
-        elif self._type == "fire":
-            return self.fire(enemy_type)
-        elif self._type == "flying":
-            return self.flying(enemy_type)
-        elif self._type == "ghost":
-            return self.ghost(enemy_type)
-        elif self._type == "grass":
-            return self.grass(enemy_type)
-        elif self._type == "ground":
-            return self.ground(enemy_type)
-        elif self._type == "ice":
-            return self.ice(enemy_type)
-        elif self._type == "normal":
-            return self.ice(enemy_type)
-        elif self._type == "poison":
-            return self.poison(enemy_type)
-        elif self._type == "psychic":
-            return self.psychic(enemy_type)
-        elif self._type == "rock":
-            return self.rock(enemy_type)
-        elif self._type == "steel":
-            return self.steel(enemy_type)
-        elif self._type == "water":
-            return self.water(enemy_type)
-        else:
-            return "not here"
-
-
-class Weaknesses():
-    def __init__(self, your_type: str):
-        self._type = your_type.lower()
-        self._bug = ["fire", "flying", "rock"]
-        self._dark = ["bug", "fairy", "fighting"]
-        self._dragon = ["dragon", "fairy", "ice"]
-        self._electric = ["ground"]
-        self._fairy = ["poison", "steel"]
-        self._fighting = ["fairy", "flying", "psychic"]
-        self._fire = ["ground", "rock", "water"]
-        self._flying = ["electric", "ice", "rock"]
-        self._ghost = ["dark", "ghost"]
-        self._grass = ["bug", "fire", "flying", "ice",  "poison"]
-        self._ground = ["grass", "ice", "water"]
-        self._ice = ["fighting", "fire", "rock", "steel"]
-        self._normal = ["fighting"]
-        self._poison = ["ground", "psychic"]
-        self._psychic = ["bug", "dark", "ghost"]
-        self._rock = ["fighting", "grass", "ground", "steel", "water"]
-        self._steel = ["fighting", "fire", "ground"]
-        self._water = ["electric", "grass"]
-
-    def bug(self, enemy_type: str):
-        for Type in range(self._bug):
-            if enemy_type.lower() == Type:
-                return True
-        return False
-
-    def dark(self, enemy_type: str):
-        for Type in range(self._dark):
-            if enemy_type.lower() == Type:
-                return True
-        return False
-
-    def dragon(self, enemy_type: str):
-        for Type in range(self._dragon):
-            if enemy_type.lower() == Type:
-                return True
-        return False
-
-    def electric(self, enemy_type: str):
-        for Type in range(self._electric):
-            if enemy_type.lower() == Type:
-                return True
-        return False
-
-    def fairy(self, enemy_type: str):
-        for Type in range(self._fairy):
-            if enemy_type.lower() == Type:
-                return True
-        return False
-
-    def fighting(self, enemy_type: str):
-        for Type in range(self._fighting):
-            if enemy_type.lower() == Type:
-                return True
-        return False
-
-    def fire(self, enemy_type: str):
-        for Type in range(self._fire):
-            if enemy_type.lower() == Type:
-                return True
-        return False
-
-    def flying(self, enemy_type: str):
-        for Type in range(self._flying):
-            if enemy_type.lower() == Type:
-                return True
-        return False
-
-    def ghost(self, enemy_type: str):
-        for Type in range(self._ghost):
-            if enemy_type.lower() == Type:
-                return True
-        return False
-
-    def grass(self, enemy_type: str):
-        for Type in range(self._grass):
-            if enemy_type.lower() == Type:
-                return True
-        return False
-
-    def ground(self, enemy_type: str):
-        for Type in range(self._ground):
-            if enemy_type.lower() == Type:
-                return True
-        return False
-
-    def ice(self, enemy_type: str):
-        for Type in range(self._ice):
-            if enemy_type.lower() == Type:
-                return True
-        return False
-
-    def normal(self, enemy_type: str):
-        for Type in range(self.normal):
-            if enemy_type.lower() == Type:
-                return True
-        return False
-
-    def poison(self, enemy_type: str):
-        for Type in range(self._poison):
-            if enemy_type.lower() == Type:
-                return True
-        return False
-
-    def psychic(self, enemy_type: str):
-        for Type in range(self._psychic):
-            if enemy_type.lower() == Type:
-                return True
-        return False
-
-    def rock(self, enemy_type: str):
-        for Type in range(self._rock):
-            if enemy_type.lower() == Type:
-                return True
-        return False
-
-    def steel(self, enemy_type: str):
-        for Type in range(self._steel):
-            if enemy_type.lower() == Type:
-                return True
-        return False
-
-    def water(self, enemy_type: str):
-        for Type in range(self._water):
-            if enemy_type.lower() == Type:
-                return True
-        return False
-
-    def weaknesses(self, enemy_type: str):
-        if self._type == "bug":
-            return self.bug(enemy_type)
-        elif self._type == "dark":
-            return self.dark(enemy_type)
-        elif self._type == "dragon":
-            return self.dragon(enemy_type)
-        elif self._type == "electric":
-            return self.electric(enemy_type)
-        elif self._type == "fairy":
-            return self.fairy(enemy_type)
-        elif self._type == "fighting":
-            return self.fighting(enemy_type)
-        elif self._type == "fire":
-            return self.fire(enemy_type)
-        elif self._type == "flying":
-            return self.flying(enemy_type)
-        elif self._type == "ghost":
-            return self.ghost(enemy_type)
-        elif self._type == "grass":
-            return self.grass(enemy_type)
-        elif self._type == "ground":
-            return self.ground(enemy_type)
-        elif self._type == "ice":
-            return self.ice(enemy_type)
-        elif self._type == "normal":
-            return self.ice(enemy_type)
-        elif self._type == "poison":
-            return self.poison(enemy_type)
-        elif self._type == "psychic":
-            return self.psychic(enemy_type)
-        elif self._type == "rock":
-            return self.rock(enemy_type)
-        elif self._type == "steel":
-            return self.steel(enemy_type)
-        elif self._type == "water":
-            return self.water(enemy_type)
+    def set_item(self, item: str):
+        self._item = item.capitalize()
 
 
 class Trainer:
@@ -547,7 +206,7 @@ class Player(Trainer):
         if len(self._pokemons) <= 6:
             self._pokemons.append(pokemon)
         else:
-            return ValueError("Too many pokemon. Max: 6") #place in pc
+            return ValueError("Too many pokemon. Max: 6")  # place in pc
 
     def release_pokemon(self, name: str):
         if len(self._pokemons) == 1:
@@ -574,9 +233,9 @@ class PC():  # IN PROGRESS
     def add_pokemon(self, page_number: int, place_number: int, pokemon: Pokemon):
         for empty in self._stored[page_number]:
             pass
-        
 
-class CPU(Trainer): # IN PROGRESS
+
+class CPU(Trainer):  # IN PROGRESS
     def __init__(self, name:  str, pokemons: List[Pokemon],
                  items: Dict[str, int] = None):
         super().__init__(name, pokemons, items)
@@ -586,7 +245,7 @@ class CPU(Trainer): # IN PROGRESS
             pass
 
 
-class Battle(): # IN PROGRESS
+class Battle():  # IN PROGRESS
     turns = 0
 
     def __init__(self, player: Player, cpu: CPU = None, wild_pokemon: Pokemon = None):
@@ -594,7 +253,19 @@ class Battle(): # IN PROGRESS
         self._cpu = cpu
         self._wild_pokemon = wild_pokemon
 
-    def catch(self, enemy_hp: int): # APPEND TO PC IF CAUGHT AND POKESLOTS ARE FULL
+    def attack(self, pokemon: object, ability, opponent: object):
+        # moveset = {"ability name": {"type": str, "power_points": int, "damage": int, "debuffs: str/None"}}
+        if self._moveset[ability]["power_points"] == 0:
+            return "Unable to use ability"
+        elif self._moveset[ability]["type"] in settings.strengths[opponent._type]:
+            opponent._hp -= 1.5 * self._moveset[ability]["damage"]
+        elif self._moveset[ability]["type"] in settings.weaknesses[opponent.type]:
+            opponent._hp -= 0.5 * self._moveset[ability]["damage"]
+        else:
+            opponent._hp -= self._moveset[ability]["damage"]
+
+
+    def catch(self, enemy_hp: int):  # APPEND TO PC IF CAUGHT AND POKESLOTS ARE FULL
         if self._wild_pokemon != None:
             if enemy_hp == self._wild_pokemon._hp:
                 if r.randint(1, 100) <= 20:
@@ -613,46 +284,8 @@ class Battle(): # IN PROGRESS
                     return True
                 return False
             elif enemy_hp <= self._wild_pokemon._hp * 0.1:
-                if r.randint(1, 100) <=  90:
+                if r.randint(1, 100) <= 90:
                     return True
                 return False
             else:
                 return True
-
-
-# def Battle(opponent: object):
-#     if type(opponent).__name__ == "CPU":
-#         pass
-#     elif type(opponent).__name__ == "Pokemon":
-#         pass
-
-
-
-def main():
-    SQUIRTLE = Pokemon("Squirtle", 100, "water", 100,
-                       "Bubble gun", 20, "water")
-    CHARAMANDER = Pokemon("Charamander", 120, "fire",
-                          80, "Flamethrower", 40, "fire")
-    BULBASUAR = Pokemon("Bulbasuar", 110, "grass",
-                        90, "Vine whip", 30, "grass")
-
-    print(CHARAMANDER._name)
-    print(CHARAMANDER._attack)
-    print(SQUIRTLE._name)
-    print(SQUIRTLE.get_name)
-    print(SQUIRTLE.get_attack)
-    SQUIRTLE.set_name("SQUIRT")
-    print(SQUIRTLE._name)
-    print(BULBASUAR.get_passive)
-
-    print(BULBASUAR.get_item)
-
-    POKEMONS = [SQUIRTLE, CHARAMANDER, BULBASUAR]
-
-    jeff = Player("jeff", ITEMS, POKEMONS, MONEY)
-
-    print(jeff.get_pokemons)
-
-
-if __name__ == "__main__":
-    main()
