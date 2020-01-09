@@ -22,3 +22,20 @@ ITEMS = {"Pokeballs":  0,
          "Elemental pill": 0,
          "Berries": 0}
 MONEY = 0
+
+strengths = {"bug": ["grass", "dark", "psychic"], "dark": ["ghost", "psychic"],
+             "dragon": ["dragon"], "electric": ["flying", "water"], "fairy": ["fighting", "dark", "dragon"],
+             "fighting": ["dark", "ice", "normal", "steel"], "fire": ["bug", "grass", "ice", "steel"],
+             "flying": ["bug", "fighting", "grass"], "ghost": ["ghost", "psychic"],
+             "grass": ["ground", "rock", "water"], "ground": ["electric", "fire", "poison", "rock", "steel"],
+             "ice": ["dragon", "flying", "grass", "ground"], "normal": [], "poison": ["fairy", "grass"],
+             "psychic": ["fighting", "poison"], "rock": ["bug", "fire", "flying", "ice"],
+             "steel": ["fairy", "ice", "rock"], "water": ["fire", "ground", "rock"]}
+weaknesses = {"bug": ["fire", "flying", "rock"], "dark": ["bug", "fairy", "fighting"],
+              "dragon": ["dragon", "fairy", "ice"], "electric": ["ground"], "fairy": ["poison", "steel"],
+              "fighting": ["fairy", "flying", "psychic"], "fire": ["ground", "rock", "water"],
+              "flying": ["electric", "ice", "rock"], "ghost": ["dark", "ghost"],
+              "grass": ["bug", "fire", "flying", "ice", "poison"], "ground": ["grass", "ice", "water"],
+              "ice": ["fighting", "fire", "rock", "steel"], "normal": ["fighting"], "poison": ["ground", "psychic"],
+              "psychic": ["bug", "dark", "ghost"], "rock": ["fighting", "grass", "ground", "steel", "water"],
+              "steel": ["fighting", "fire", "ground"], "water": ["electric", "grass"]}
