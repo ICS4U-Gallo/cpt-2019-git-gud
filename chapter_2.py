@@ -10,13 +10,13 @@ class Chapter2View(arcade.View):
         self.selected_rect_y = 0
         self.pos_rect_x = 0
         self.pos_rect_y = 0
-        self.characters = "abcdefghijklmnopqrstuvwxyz"
+        self.characters = "abcdefghijklmnopqrstuvwxyz,.!?@#$%&*"
         self.character_location = 0
-        self.name = ""
+        self.name = "HELLO"
 
     def on_draw(self):
         arcade.start_render()
-        arcade.draw_text("What's your name?", settings.WIDTH // 20,
+        arcade.draw_text("What's your name?", settings.WIDTH // 21,
                          settings.HEIGHT - settings.WIDTH // 25, arcade.color.WHITE,
                          30, 0, "left", 'Comic Sans', True, False, "left", "top")
 
@@ -33,8 +33,10 @@ class Chapter2View(arcade.View):
                                        1.1) // 6, (settings.HEIGHT // 2.2) // 4,
                                       arcade.color.GOLD, 5)
         
-        arcade.draw_text(self.name, 20, 20, arcade.color.WHITE)
-
+        arcade.draw_rectangle_outline(564, settings.HEIGHT - settings.WIDTH // 16, 400, 75, arcade.color.BLACK, 5)
+        
+        arcade.draw_text(self.name, 564, settings.HEIGHT - settings.WIDTH // 25, arcade.color.WHITE, 30, 0, "left", 'Comic  Sans', True, True, "left", "top")
+        
         row = 0
         column = 0
         for i in range(len(self.characters)):
@@ -84,10 +86,15 @@ class Chapter2View(arcade.View):
                 self.selected_rect_y += 68.6
                 self.pos_rect_y += 1
                 self.character_location += 6
-                
-
+        
         if self.character_location == 41 and key == arcade.key.ENTER:
             self.director.next_view()
+        elif key == arcade.key.ENTER and modifiers == 1:
+            self.name += self.characters[self.character_location].upper()
+        elif key == arcade.key.ENTER:
+            self.name += self.characters[self.character_location]
+
+
 
 
 if __name__ == "__main__":
