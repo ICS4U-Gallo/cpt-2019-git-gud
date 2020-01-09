@@ -12,6 +12,7 @@ class Chapter2View(arcade.View):
         self.pos_rect_y = 0
         self.characters = "abcdefghijklmnopqrstuvwxyz"
         self.character_location = 0
+        self.name = ""
 
     def on_draw(self):
         arcade.start_render()
@@ -31,6 +32,8 @@ class Chapter2View(arcade.View):
                                       (settings.WIDTH //
                                        1.1) // 6, (settings.HEIGHT // 2.2) // 4,
                                       arcade.color.GOLD, 5)
+        
+        arcade.draw_text(self.name, 20, 20, arcade.color.WHITE)
 
         row = 0
         column = 0
@@ -81,8 +84,9 @@ class Chapter2View(arcade.View):
                 self.selected_rect_y += 68.6
                 self.pos_rect_y += 1
                 self.character_location += 6
+                
 
-        if self.selected_rect_x == 30 and key == arcade.key.ENTER:
+        if self.character_location == 41 and key == arcade.key.ENTER:
             self.director.next_view()
 
 
