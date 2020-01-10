@@ -18,7 +18,6 @@ class Director(arcade.Window):
             LoadFile,
             Chapter1View,
             Chapter2View,
-            Grid
             ]
         self.next_view()
 

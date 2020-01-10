@@ -1,6 +1,6 @@
 from typing import List, Dict
 import random as r
-from settings
+import settings
 
 
 class FakeDirector:
