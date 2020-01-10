@@ -29,22 +29,6 @@ class FakeDirector:
             exit()
 
 
-def remove_from_file_name(string):
-    try:
-        string = int(string)
-    except:
-        pass
-    else:
-        return string
-
-    if string == ".json":
-        return ""
-    elif string[0] == "_":
-        return " " + remove_from_file_name(string[1:])
-    else:
-        return string[0] + remove_from_file_name(string[1:])
-
-
 class Attack:
     attacks = []
 
@@ -296,7 +280,7 @@ class Battle():  # IN PROGRESS
 
 def bubble_sort(array):
     while True:
-        Sorted = True
+        changed = False
         for i in range(len(array)):
             if i != len(array) - 1:
                 current = array[i]
@@ -304,6 +288,6 @@ def bubble_sort(array):
                 if current > proceeding:
                     array[i] = proceeding
                     array[i+1] = current
-                    Sorted = False
-        if Sorted:
+                    changed = True
+        if not changed:
             return array
