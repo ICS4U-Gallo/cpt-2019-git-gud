@@ -88,6 +88,7 @@ class Pokemon:
         self._hp = health_points
         self._type = Type.lower()
         self._passive = passive_ability
+        self._debuff = None
         self._moveset = moveset
         self._image = image
         self._lvl = level
@@ -117,6 +118,9 @@ class Pokemon:
 
     def set_passive(self, passive: str):
         self._passive = passive.lower()
+    
+    def get_debuff(self):
+        return self._debuff
 
     def get_moveset(self, attack: int):
         return Attack.attacks[attack]
@@ -289,3 +293,17 @@ class Battle():  # IN PROGRESS
                 return False
             else:
                 return True
+
+def bubble_sort(array):
+    while True:
+        Sorted = True
+        for i in range(len(array)):
+            if i != len(array) - 1:
+                current = array[i]
+                proceeding = array[i+1]
+                if current > proceeding:
+                    array[i] = proceeding
+                    array[i+1] = current
+                    Sorted = False
+        if Sorted:
+            return array
