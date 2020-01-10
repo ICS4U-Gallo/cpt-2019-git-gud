@@ -12,7 +12,7 @@ class Chapter2View(arcade.View):
         self.pos_rect_y = 0
         self.characters = "abcdefghijklmnopqrstuvwxyz,.!?@#$%&*"
         self.character_location = 0
-        self.name = "HELLO"
+        self.name = "  "
 
     def on_draw(self):
         arcade.start_render()
@@ -33,10 +33,15 @@ class Chapter2View(arcade.View):
                                        1.1) // 6, (settings.HEIGHT // 2.2) // 4,
                                       arcade.color.GOLD, 5)
         
-        arcade.draw_rectangle_outline(564, settings.HEIGHT - settings.WIDTH // 16, 400, 75, arcade.color.BLACK, 5)
+        arcade.draw_rectangle_outline(564,
+                                      settings.HEIGHT - settings.WIDTH // 16,
+                                      400, 75, arcade.color.BLACK, 5)
         
-        arcade.draw_text(self.name, 564, settings.HEIGHT - settings.WIDTH // 25, arcade.color.WHITE, 30, 0, "left", 'Comic  Sans', True, True, "left", "top")
-        
+        arcade.draw_text(self.name, 345,
+                         settings.HEIGHT - settings.WIDTH // 40,
+                         arcade.color.GOLD, 50, 0, "left", 'Comic  Sans',
+                         True, True, "left", "top")
+    
         row = 0
         column = 0
         for i in range(len(self.characters)):
@@ -86,14 +91,16 @@ class Chapter2View(arcade.View):
                 self.selected_rect_y += 68.6
                 self.pos_rect_y += 1
                 self.character_location += 6
+                
+        if key == arcade.key.BACKSPACE and len(self.name) > 2:
+            self.name = self.name[:-1]
         
         if self.character_location == 41 and key == arcade.key.ENTER:
             self.director.next_view()
-        elif key == arcade.key.ENTER and modifiers == 1:
+        elif key == arcade.key.ENTER and modifiers == 1 and len(self.name) < 13:
             self.name += self.characters[self.character_location].upper()
-        elif key == arcade.key.ENTER:
+        elif key == arcade.key.ENTER and len(self.name) < 13:
             self.name += self.characters[self.character_location]
-
 
 
 
