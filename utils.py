@@ -148,33 +148,46 @@ class Pokemon:
         self._item = item.capitalize()
 
 
+def load_texture_pair(filename):
+    return [
+        arcade.load_texture(filename),
+        arcade.load_texture(filename, mirrored=True)
+    ]
+
+
 class PokePlayer(arcade.Sprite):
     def __init__(self, pokemon: str):
         super().__init__()
-        self.char_direction = "Front"
-        self.front = arcade.load_texture(f"images\pokemon\{pokemon}\FrontIdle.png")
-        self.back = arcade.load_texture(f"images\pokemon\{pokemon}\BackIdle.png")
-        # self.left = arcade.load_texture(f"images\pokemon\{pokemon}\???.png")
-        # self.right = arcade.load_texture(f"images\pokemon\{pokemon}\???.png")
-    
-    def update_animation(self, delta_time=1 /60):
+        self.UP = 0
+        self.DOWN = 1
+        self.character_face_direction: self.UP
+        self.main_path = arcade.load_texture(f"images\pokemon\{pokemon}")
+
+        self.cur_texture = 0
+
+        self.idle_textures = []
+        for i in range(2):
+            texture = load_texture_pair(f"{main_path}\idle{i}.png")
+            self.idle_textures.append(texture)
+
+        self.walk_textures = []
+        for i in range(4):
+            texture = load_texture_pair(f"{main_path}\walk{i}.png")
+            self.walk_textures.append(texture)
+
+    def update_animation(self, delta_time: float = 1/60):
+        if self.change_y < 0 and self.character_face_direction == self.UP:
+            self.character_face_direction = self.DOWN
+        elif self.change_y > 0 and self.character_face_direction == self.DOWN:
+            self.character_face_direction = self.UP
+
         if self.change_x == 0 and self.change_y == 0:
-            if self.char_direction == "Front":
-                self.texture = self.front
-            elif self.char_direction == "Back":
-                self.texture = self.back
-            # elif self.char_direction == "Left":
-            #     self.texture = self.left
-            # elif self.char_direction == "Right":
-            #     self.texture = self.right
+            self.texture = self.idle_texture_pair[0][self.character_face_direction]
 
-        if self.change_y < 0:
-            self.char_direction = "Front"
-        elif self.change_y > 0:
-            self.char_direction = "Back"
-
-
-
+        self.cur_texture += 1
+        if self.cur_texture > 7 * 7:
+            self.cur_texture = 0
+        self.texture = self.walk_textures[self.cur_texture // 7][self.character_face_direction]
 
 
 class Trainer:
