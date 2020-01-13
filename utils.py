@@ -1,5 +1,6 @@
 from typing import List, Dict
 import random as r
+import arcade
 import settings
 
 
@@ -66,8 +67,8 @@ class Attack:
 
 
 class Pokemon:
-    def __init__(self, name, health_points, Type, passive_ability, moveset,
-                 image, sound, level, experience_points=0, item=None):
+    def __init__(self, name: str, health_points: int, Type: str, passive_ability: str, moveset: List[str],
+                 image: str, sound: str, level: int, experience_points:int=0, item:str=None):
         self._name = name
         self._hp = health_points
         self._type = Type.lower()
@@ -145,6 +146,35 @@ class Pokemon:
 
     def set_item(self, item: str):
         self._item = item.capitalize()
+
+
+class PokePlayer(arcade.Sprite):
+    def __init__(self, pokemon: str):
+        super().__init__()
+        self.char_direction = "Front"
+        self.front = arcade.load_texture(f"images\pokemon\{pokemon}\FrontIdle.png")
+        self.back = arcade.load_texture(f"images\pokemon\{pokemon}\BackIdle.png")
+        # self.left = arcade.load_texture(f"images\pokemon\{pokemon}\???.png")
+        # self.right = arcade.load_texture(f"images\pokemon\{pokemon}\???.png")
+    
+    def update_animation(self, delta_time=1 /60):
+        if self.change_x == 0 and self.change_y == 0:
+            if self.char_direction == "Front":
+                self.texture = self.front
+            elif self.char_direction == "Back":
+                self.texture = self.back
+            # elif self.char_direction == "Left":
+            #     self.texture = self.left
+            # elif self.char_direction == "Right":
+            #     self.texture = self.right
+
+        if self.change_y < 0:
+            self.char_direction = "Front"
+        elif self.change_y > 0:
+            self.char_direction = "Back"
+
+
+
 
 
 class Trainer:
@@ -251,10 +281,17 @@ class Battle():  # IN PROGRESS
             opponent._hp -= 0.5 * self._moveset[ability]["damage"]
         else:
             opponent._hp -= self._moveset[ability]["damage"]
+        
+        # exp gain: a*t*b*L/(7*s)
+        # a: a=1 if wild pokemon, a=1.5 if trainer owned
+        # t: t=1 if pokemon is trainer caught, t = 1.5 if pokemon is obtained from trading
+        # b: pokemon's based exp value
+        # L: the level of the defeated pokemon
+        # s: ...
 
 
     def catch(self, enemy_hp: int):  # APPEND TO PC IF CAUGHT AND POKESLOTS ARE FULL
-        if self._wild_pokemon != None:
+        if self._wild_pokemon is not None:
             if enemy_hp == self._wild_pokemon._hp:
                 if r.randint(1, 100) <= 20:
                     return True
@@ -278,16 +315,44 @@ class Battle():  # IN PROGRESS
             else:
                 return True
 
-def bubble_sort(array):
+def bubble_sort(array: List[int]) -> List[int]:
     while True:
         changed = False
         for i in range(len(array)):
             if i != len(array) - 1:
-                current = array[i]
                 proceeding = array[i+1]
-                if current > proceeding:
+                if array[i] > proceeding:
+                    array[i+1] = array[i]
                     array[i] = proceeding
-                    array[i+1] = current
                     changed = True
         if not changed:
             return array
+
+def merge_sort(array: List[int]) -> List[int]:
+    if len(array) <= 1:
+        return array
+
+    left = merge_sort(array[:len(array)//2])
+    right = merge_sort(array[len(array)//2:])
+
+    new_array = []
+    left_marker = 0
+    right_marker = 0
+
+    while left_marker < len(left) and right_marker < len(right):
+        if left[left_marker] <= right[right_marker]:
+                new_array.append(left[left_marker])
+                left_marker += 1
+        else:
+            new_array.append(right[right_marker])
+            right_marker += 1
+
+    while left_marker < len(left):
+        new_array.append(left[left_marker])
+        left_marker += 1
+
+    while right_marker < len(right):
+        new_array.append(right[right_marker])
+        right_marker += 1
+
+    return new_array

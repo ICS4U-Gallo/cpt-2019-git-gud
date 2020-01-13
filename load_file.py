@@ -9,12 +9,9 @@ from test_grid import Grid
 class LoadFile(arcade.View):
     def on_show(self):
         arcade.set_background_color(arcade.color.BLUEBERRY)
-
-        if not settings.load_saves:
-            self.saves = {0: None, 1: None, 2: None}
-            for i in range(len(os.listdir("saves"))):
-                self.saves[i] = os.listdir("saves")[i]
-            settings.load_saves = True
+        self.saves = {0: None, 1: None, 2: None}
+        for i in range(len(os.listdir("saves"))):
+            self.saves[i] = os.listdir("saves")[i]
 
         self.file_indicator = settings.HEIGHT//2 + 192
         self.selection = 0
