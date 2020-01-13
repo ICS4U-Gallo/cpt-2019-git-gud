@@ -6,7 +6,7 @@ from menu import MenuView
 from load_file import LoadFile
 from chapter_1 import Chapter1View
 from chapter_2 import Chapter2View
-from test_grid import Grid
+from chapter_3 import Chapter3View
 
 
 class Director(arcade.Window):
@@ -18,6 +18,7 @@ class Director(arcade.Window):
             LoadFile,
             Chapter1View,
             Chapter2View,
+            Chapter3View
             ]
         self.next_view()
 

@@ -10,6 +10,7 @@ MALE_CHAR = arcade.load_texture("images/char_male.png")
 FEMALE_CHAR = arcade.load_texture("images/char_female.png")
 BACKGROUND_MUSIC = arcade.load_sound("audio/screen_menu.mp3")
 RING = arcade.load_sound("audio/menu_get.mp3")
+BATTLE_BACKGROUND = arcade.load_texture("images/battle_background.png")
 CHAR = ""
 NAME = ""
 ITEMS = {"Pokeballs":  0,
@@ -39,3 +40,4 @@ weaknesses = {"bug": ["fire", "flying", "rock"], "dark": ["bug", "fairy", "fight
               "ice": ["fighting", "fire", "rock", "steel"], "normal": ["fighting"], "poison": ["ground", "psychic"],
               "psychic": ["bug", "dark", "ghost"], "rock": ["fighting", "grass", "ground", "steel", "water"],
               "steel": ["fighting", "fire", "ground"], "water": ["electric", "grass"]}
+CHARACTERS = "abcdefghijklmnopqrstuvwxyz,.!?@#$%&*"

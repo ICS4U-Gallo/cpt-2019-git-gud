@@ -105,7 +105,8 @@ class LoadFile(arcade.View):
                 else:
                     with open(f"saves\{self.saves[self.selection]}", "r") as f:
                         settings.info = json.load(f)
-                    self.director.specific_view(Grid)
+                    # self.director.specific_view(Grid)
+                    self.director.next_view()
 
 
 if __name__ == "__main__":

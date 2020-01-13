@@ -10,7 +10,7 @@ class Chapter2View(arcade.View):
         self.selected_rect_y = 0
         self.pos_rect_x = 0
         self.pos_rect_y = 0
-        self.characters = "abcdefghijklmnopqrstuvwxyz,.!?@#$%&*"
+        self.characters = settings.CHARACTERS
         self.character_location = 0
         self.name = "  "
 
