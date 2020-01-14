@@ -68,7 +68,7 @@ class Attack:
 
 class Pokemon:
     def __init__(self, name: str, health_points: int, Type: str, passive_ability: str, moveset: List[str],
-                 image: str, sound: str, level: int, experience_points:int=0, item:str=None):
+                 image: str, sound: str, level: int, experience_points: int = 0, item: str = None):
         self._name = name
         self._hp = health_points
         self._type = Type.lower()
@@ -103,7 +103,7 @@ class Pokemon:
 
     def set_passive(self, passive: str):
         self._passive = passive.lower()
-    
+
     def get_debuff(self):
         return self._debuff
 
@@ -148,46 +148,73 @@ class Pokemon:
         self._item = item.capitalize()
 
 
-def load_texture_pair(filename):
-    return [
-        arcade.load_texture(filename),
-        arcade.load_texture(filename, mirrored=True)
-    ]
-
-
 class PokePlayer(arcade.Sprite):
-    def __init__(self, pokemon: str):
+    def __init__(self, pokemon: str, direction: str, speed=int):
         super().__init__()
-        self.UP = 0
-        self.DOWN = 1
-        self.character_face_direction: self.UP
-        self.main_path = arcade.load_texture(f"images\pokemon\{pokemon}")
+        self.character_direction = direction
+        self.speed = speed
+        self.main_path = f"images\pokemon\{pokemon}"
+        self.animation_timer = 0
+        self.texture_num = 0
 
-        self.cur_texture = 0
+        self.idle_textures = {"up": None, "down": None,
+                              "left": None, "right": None}
+        for key in self.idle_textures:
+            texture = arcade.load_texture(
+                f"{self.main_path}\idle-{key}.png", scale=1.5)
+            self.idle_textures[key] = texture
 
-        self.idle_textures = []
-        for i in range(2):
-            texture = load_texture_pair(f"{main_path}\idle{i}.png")
-            self.idle_textures.append(texture)
+        self.walk_textures = {"up": [], "down": [],
+                              "left": [], "right": []}
+        for key in self.walk_textures.keys():
+            texture1 = arcade.load_texture(
+                f"{self.main_path}\walk-{key}0.png", scale=1.5)
+            if key == "left" or key == "right":
+                texture2 = arcade.load_texture(
+                    f"{self.main_path}\idle-{key}.png", scale=1.5)
+            else:
+                texture2 = arcade.load_texture(
+                    f"{self.main_path}\walk-{key}1.png", scale=1.5)
+            self.walk_textures[key].append(texture1)
+            self.walk_textures[key].append(texture2)
 
-        self.walk_textures = []
-        for i in range(4):
-            texture = load_texture_pair(f"{main_path}\walk{i}.png")
-            self.walk_textures.append(texture)
+        self.texture = self.idle_textures[self.character_direction]
 
     def update_animation(self, delta_time: float = 1/60):
-        if self.change_y < 0 and self.character_face_direction == self.UP:
-            self.character_face_direction = self.DOWN
-        elif self.change_y > 0 and self.character_face_direction == self.DOWN:
-            self.character_face_direction = self.UP
-
         if self.change_x == 0 and self.change_y == 0:
-            self.texture = self.idle_texture_pair[0][self.character_face_direction]
+            if self.character_direction == "left" or self.character_direction == "right":
+                if self.texture_num != 0:
+                    self.texture = self.walk_textures[self.character_direction][0]
+            self.texture = self.idle_textures[self.character_direction]
+            self.texture_num = 0
+            self.animation_timer = 0
+        elif self.animation_timer == 0:
+            if self.texture_num == 0:
+                self.texture_num = 1
+            else:
+                self.texture_num = 0
+        else:
+            self.animation_timer += 1
 
-        self.cur_texture += 1
-        if self.cur_texture > 7 * 7:
-            self.cur_texture = 0
-        self.texture = self.walk_textures[self.cur_texture // 7][self.character_face_direction]
+        if self.change_x < 0:
+            self.character_direction = "left"
+            self.texture = self.walk_textures["left"][self.texture_num]
+            self.animation_timer += 1
+        elif self.change_x > 0:
+            self.character_direction = "right"
+            self.texture = self.walk_textures["right"][self.texture_num]
+            self.animation_timer += 1
+        elif self.change_y < 0:
+            self.character_direction = "down"
+            self.texture = self.walk_textures["down"][self.texture_num]
+            self.animation_timer += 1
+        elif self.change_y > 0:
+            self.character_direction = "up"
+            self.texture = self.walk_textures["up"][self.texture_num]
+            self.animation_timer += 1
+
+        if self.animation_timer > 8 * 3 - (self.speed * 3):
+            self.animation_timer = 0
 
 
 class Trainer:
@@ -294,14 +321,13 @@ class Battle():  # IN PROGRESS
             opponent._hp -= 0.5 * self._moveset[ability]["damage"]
         else:
             opponent._hp -= self._moveset[ability]["damage"]
-        
+
         # exp gain: a*t*b*L/(7*s)
         # a: a=1 if wild pokemon, a=1.5 if trainer owned
         # t: t=1 if pokemon is trainer caught, t = 1.5 if pokemon is obtained from trading
         # b: pokemon's based exp value
         # L: the level of the defeated pokemon
         # s: ...
-
 
     def catch(self, enemy_hp: int):  # APPEND TO PC IF CAUGHT AND POKESLOTS ARE FULL
         if self._wild_pokemon is not None:
@@ -328,6 +354,7 @@ class Battle():  # IN PROGRESS
             else:
                 return True
 
+
 def bubble_sort(array: List[int]) -> List[int]:
     while True:
         changed = False
@@ -340,6 +367,7 @@ def bubble_sort(array: List[int]) -> List[int]:
                     changed = True
         if not changed:
             return array
+
 
 def merge_sort(array: List[int]) -> List[int]:
     if len(array) <= 1:
@@ -354,8 +382,8 @@ def merge_sort(array: List[int]) -> List[int]:
 
     while left_marker < len(left) and right_marker < len(right):
         if left[left_marker] <= right[right_marker]:
-                new_array.append(left[left_marker])
-                left_marker += 1
+            new_array.append(left[left_marker])
+            left_marker += 1
         else:
             new_array.append(right[right_marker])
             right_marker += 1
