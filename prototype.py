@@ -19,15 +19,14 @@ class MINIGAME(arcade.View):
         self.player_list.draw()
 
     def on_key_press(self, key, modifiers):
-        if key == arcade.key.RIGHT:
-            self.player.change_x = self.player.speed
-        elif key == arcade.key.LEFT:
-            self.player.change_x = -self.player.speed
-
         if key == arcade.key.UP:
-            self.player.change_y = self.player.speed
+            self.player.move("up")
         elif key == arcade.key.DOWN:
-            self.player.change_y = -self.player.speed
+            self.player.move("down")
+        if key == arcade.key.RIGHT:
+            self.player.move("right")
+        elif key == arcade.key.LEFT:
+            self.player.move("left")
 
         if key == arcade.key.ENTER:
             self.director.next_view()

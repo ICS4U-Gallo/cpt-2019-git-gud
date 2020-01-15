@@ -215,6 +215,16 @@ class PokePlayer(arcade.Sprite):
 
         if self.animation_timer > 8 * 3 - (self.speed * 3):
             self.animation_timer = 0
+    
+    def move(self, direction: str):
+        if direction == "up":
+            self.change_y += self.speed
+        elif direction == "down":
+            self.change_y += -self.speed
+        elif direction == "left":
+            self.change_x += -self.speed
+        elif direction == "right":
+            self.change_x += self.speed
 
 
 class Trainer:
