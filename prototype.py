@@ -7,11 +7,13 @@ import utils
 
 class MINIGAME(arcade.View):
     def on_show(self):
-        arcade.set_background_color(arcade.color.WHITE)
+        arcade.set_background_color(arcade.color.ASH_GREY)
         self.player_list = arcade.SpriteList()
-        self.player = utils.PokePlayer("Pikachu", "down", 2)
-        self.player.center_x = settings.WIDTH//2
-        self.player.center_y = settings.HEIGHT//2
+        self.player = utils.PokePlayer("Pikachu", (100, 100), 2)
+        self.player.boundary_top = settings.HEIGHT
+        self.player.boundary_bottom = 0
+        self.player.boundary_left = 0
+        self.player.boundary_right = settings.WIDTH
         self.player_list.append(self.player)
 
     def on_draw(self):
@@ -20,22 +22,26 @@ class MINIGAME(arcade.View):
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.UP:
-            self.player.move("up")
+            self.player.set_movement("up", True)
         elif key == arcade.key.DOWN:
-            self.player.move("down")
-        if key == arcade.key.RIGHT:
-            self.player.move("right")
-        elif key == arcade.key.LEFT:
-            self.player.move("left")
+            self.player.set_movement("down", True)
+        if key == arcade.key.LEFT:
+            self.player.set_movement("left", True)
+        elif key == arcade.key.RIGHT:
+            self.player.set_movement("right", True)
 
         if key == arcade.key.ENTER:
             self.director.next_view()
 
     def on_key_release(self, key, _modifiers):
-        if key == arcade.key.LEFT or key == arcade.key.RIGHT:
-            self.player.change_x = 0
-        elif key == arcade.key.UP or key == arcade.key.DOWN:
-            self.player.change_y = 0
+        if key == arcade.key.UP:
+            self.player.set_movement("up", False)
+        elif key == arcade.key.DOWN:
+            self.player.set_movement("down", False)
+        if key == arcade.key.LEFT:
+            self.player.set_movement("left", False)
+        elif key == arcade.key.RIGHT:
+            self.player.set_movement("right", False)
 
     def on_update(self, delta_time):
         self.player_list.update()
