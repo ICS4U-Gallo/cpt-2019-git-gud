@@ -66,7 +66,7 @@ class Attack:
         return self._attack_audio
 
 
-class Pokemon:
+class Pokemon(Attack):
     def __init__(self, name: str, health_points: int, Type: str, passive_ability: str, moveset: List[str],
                  image: str, sound: str, level: int, experience_points: int = 0, item: str = None):
         self._name = name
@@ -275,10 +275,7 @@ class Player(Trainer):
                     del self._pokemons[i]
 
 
-class PC():  # IN PROGRESS
-    # Set dict on each screen
-    # when dict is full, move to next screen
-    # searches and whatnot can be implemented afterwards
+# class PC():
     def __init__(self):
         self._stored = {}
         self._pages = []
@@ -310,6 +307,7 @@ class Battle():  # IN PROGRESS
         self._player = player
         self._cpu = cpu
         self._wild_pokemon = wild_pokemon
+        self._moveset = player._pokemons[0].get_moveset
 
     def attack(self, pokemon: object, ability, opponent: object):
         # moveset = {"ability name": {"type": str, "power_points": int, "damage": int, "debuffs: str/None"}}
@@ -397,3 +395,27 @@ def merge_sort(array: List[int]) -> List[int]:
         right_marker += 1
 
     return new_array
+
+
+def linear_search(target: int, data: List) -> int:
+    for i, num in enumerate(data):
+        if num == target:
+            return i
+
+    return -1
+
+
+def binary_search(target: int, numbers: List) -> int:
+    start = 0
+    end = len(numbers) - 1
+    while start <= end:
+        mid = (start + end) // 2
+        if target == numbers[mid]:
+            return mid
+        elif target > numbers[mid]:
+            start = mid + 1
+        else:
+            end = mid - 1
+    return -1
+
+
