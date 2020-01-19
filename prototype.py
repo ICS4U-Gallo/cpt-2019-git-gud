@@ -8,17 +8,19 @@ import utils
 class MINIGAME(arcade.View):
     def on_show(self):
         arcade.set_background_color(arcade.color.ASH_GREY)
-        self.player_list = arcade.SpriteList()
-        self.player = utils.PokePlayer("Pikachu", (100, 100), 2)
-        self.player.boundary_top = settings.HEIGHT
-        self.player.boundary_bottom = 0
-        self.player.boundary_left = 0
-        self.player.boundary_right = settings.WIDTH
-        self.player_list.append(self.player)
+        if not settings.shown:
+            self.player_list = arcade.SpriteList()
+            self.enemies = arcade.SpriteList()
+            self.pokemon = utils.Pokemon("Pikachu", 100, "electric", "", [], "", "", 10)
+            self.player = utils.Entity("player", self.pokemon, (100, 100), 2)
+            self.player.set_boundaries(settings.WIDTH, settings.HEIGHT)
+            self.player_list.append(self.player)
+            settings.shown = True
 
     def on_draw(self):
         arcade.start_render()
         self.player_list.draw()
+        self.enemies.draw()
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.UP:
@@ -46,6 +48,8 @@ class MINIGAME(arcade.View):
     def on_update(self, delta_time):
         self.player_list.update()
         self.player_list.update_animation()
+        self.enemies.update()
+        self.enemies.update_animation()
 
 
 if __name__ == "__main__":
