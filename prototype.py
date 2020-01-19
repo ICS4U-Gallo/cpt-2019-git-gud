@@ -7,40 +7,49 @@ import utils
 
 class MINIGAME(arcade.View):
     def on_show(self):
-        arcade.set_background_color(arcade.color.WHITE)
-        self.player_list = arcade.SpriteList()
-        self.player = utils.PokePlayer("Pikachu", "down", 2)
-        self.player.center_x = settings.WIDTH//2
-        self.player.center_y = settings.HEIGHT//2
-        self.player_list.append(self.player)
+        arcade.set_background_color(arcade.color.ASH_GREY)
+        if not settings.shown:
+            self.player_list = arcade.SpriteList()
+            self.enemies = arcade.SpriteList()
+            self.pokemon = utils.Pokemon("Pikachu", 100, "electric", "", [], "", "", 10)
+            self.player = utils.Entity("player", self.pokemon, (100, 100), 2)
+            self.player.set_boundaries(settings.WIDTH, settings.HEIGHT)
+            self.player_list.append(self.player)
+            settings.shown = True
 
     def on_draw(self):
         arcade.start_render()
         self.player_list.draw()
+        self.enemies.draw()
 
     def on_key_press(self, key, modifiers):
-        if key == arcade.key.RIGHT:
-            self.player.change_x = self.player.speed
-        elif key == arcade.key.LEFT:
-            self.player.change_x = -self.player.speed
-
         if key == arcade.key.UP:
-            self.player.change_y = self.player.speed
+            self.player.set_movement("up", True)
         elif key == arcade.key.DOWN:
-            self.player.change_y = -self.player.speed
+            self.player.set_movement("down", True)
+        if key == arcade.key.LEFT:
+            self.player.set_movement("left", True)
+        elif key == arcade.key.RIGHT:
+            self.player.set_movement("right", True)
 
         if key == arcade.key.ENTER:
             self.director.next_view()
 
     def on_key_release(self, key, _modifiers):
-        if key == arcade.key.LEFT or key == arcade.key.RIGHT:
-            self.player.change_x = 0
-        elif key == arcade.key.UP or key == arcade.key.DOWN:
-            self.player.change_y = 0
+        if key == arcade.key.UP:
+            self.player.set_movement("up", False)
+        elif key == arcade.key.DOWN:
+            self.player.set_movement("down", False)
+        if key == arcade.key.LEFT:
+            self.player.set_movement("left", False)
+        elif key == arcade.key.RIGHT:
+            self.player.set_movement("right", False)
 
     def on_update(self, delta_time):
         self.player_list.update()
         self.player_list.update_animation()
+        self.enemies.update()
+        self.enemies.update_animation()
 
 
 if __name__ == "__main__":

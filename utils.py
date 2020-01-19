@@ -148,73 +148,160 @@ class Pokemon(Attack):
         self._item = item.capitalize()
 
 
-class PokePlayer(arcade.Sprite):
-    def __init__(self, pokemon: str, direction: str, speed=int):
+class Entity(arcade.Sprite):
+    player = []
+    enemy = []
+    def __init__(self, entity_type: str, pokemon: object, location: tuple, speed:int=1, detection_range:int=50, direction:str="down"):
         super().__init__()
-        self.character_direction = direction
-        self.speed = speed
-        self.main_path = f"images\pokemon\{pokemon}"
-        self.animation_timer = 0
-        self.texture_num = 0
+        self.pokemon = pokemon
+        self._detection_range = detection_range
+        self._entity_type = entity_type
+        self.hidden = False
+        if self._entity_type == "player":
+            Entity.player.append(self)
+        elif self._entity_type == "enemy":
+            self.hidden = True
+            Entity.enemy.append(self)
+        self.set_position(location[0], location[1])
+        self._character_direction = direction
+        self._movement = {"up": False, "down": False,
+                         "left": False, "right": False}
+        self.collided = False
+        self._speed = speed
+        self._main_path = f"images\pokemon\{pokemon.get_name()}"
+        self._animation_timer = 0
+        self._walk_texture_num = 0
+
+        self.hidden_visual = arcade.load_texture("images/transparent.png")
 
         self.idle_textures = {"up": None, "down": None,
                               "left": None, "right": None}
         for key in self.idle_textures:
             texture = arcade.load_texture(
-                f"{self.main_path}\idle-{key}.png", scale=1.5)
+                f"{self._main_path}\idle-{key}.png", scale=1.5)
             self.idle_textures[key] = texture
 
         self.walk_textures = {"up": [], "down": [],
                               "left": [], "right": []}
         for key in self.walk_textures.keys():
             texture1 = arcade.load_texture(
-                f"{self.main_path}\walk-{key}0.png", scale=1.5)
+                f"{self._main_path}\walk-{key}0.png", scale=1.5)
             if key == "left" or key == "right":
                 texture2 = arcade.load_texture(
-                    f"{self.main_path}\idle-{key}.png", scale=1.5)
+                    f"{self._main_path}\idle-{key}.png", scale=1.5)
             else:
                 texture2 = arcade.load_texture(
-                    f"{self.main_path}\walk-{key}1.png", scale=1.5)
+                    f"{self._main_path}\walk-{key}1.png", scale=1.5)
             self.walk_textures[key].append(texture1)
             self.walk_textures[key].append(texture2)
 
-        self.texture = self.idle_textures[self.character_direction]
+        if self.hidden:
+            self.texture = self.hidden_visual
+        else:
+            self.texture = self.idle_textures[self._character_direction]
+
+    def get_speed(self):
+        return self._speed
+    
+    def set_speed(self, value: int):
+        self._speed = value
+    
+    def get_movement(self):
+        return self._movement
+    
+    def set_movement(self, direction: str, moving: bool):
+        self._movement[direction] = moving
+    
+    def get_character_direction(self):
+        return self._character_direction
+
+    def set_boundaries(self, width: int, height: int):
+        self.boundary_top = height
+        self.boundary_bottom = 0
+        self.boundary_left = 0
+        self.boundary_right = width
+
+    def detected(self, detecting:str="player"):
+        vision_field_x = list(range(int(self.left), int(self.right)))
+        vision_field_y = list(range(int(self.bottom), int(self.top)))
+        direction = self._character_direction
+        detection_range = self._detection_range
+        if detecting == "player":
+            for player in Entity.player:
+                if direction == "up":
+                    if int(player.center_x) in vision_field_x and int(player.center_y) in range(int(self.center_y), int(self.top)+detection_range):
+                        return True
+                elif direction == "down":
+                    if int(player.center_x) in vision_field_x and int(player.center_y) in range(int(self.bottom)-detection_range, int(self.center_y)):
+                        return True
+                elif direction == "left":
+                    if int(player.center_y) in vision_field_y and int(player.center_x) in range(int(self.left)-detection_range, int(self.center_x)):
+                        return True
+                elif direction == "right":
+                    if int(player.center_y) in vision_field_y and int(player.center_x) in range(int(self.center_x), int(self.right)+detection_range):
+                        return True    
+
+    def update(self):
+        if self in Entity.enemy and self.hidden:
+            if self.detected():
+                self.texture = self.idle_textures[self._character_direction]
+                self.hidden = False
+                        
+        if self.pokemon.get_hp() <= 0:
+            self.remove_from_sprite_lists()
+
+        if self._movement["up"] and self.top < self.boundary_top:
+            self.change_y = self._speed
+        elif self._movement["down"] and self.bottom > self.boundary_bottom:
+            self.change_y = -self._speed
+        else:
+            self.change_y = 0
+
+        if self._movement["left"] and self.left > self.boundary_left:
+            self.change_x = -self._speed
+        elif self._movement["right"] and self.right < self.boundary_right:
+            self.change_x = self._speed
+        else:
+            self.change_x = 0
+
+        self.position = [self._position[0] + self.change_x, self._position[1] + self.change_y]
 
     def update_animation(self, delta_time: float = 1/60):
-        if self.change_x == 0 and self.change_y == 0:
-            if self.character_direction == "left" or self.character_direction == "right":
-                if self.texture_num != 0:
-                    self.texture = self.walk_textures[self.character_direction][0]
-            self.texture = self.idle_textures[self.character_direction]
-            self.texture_num = 0
-            self.animation_timer = 0
-        elif self.animation_timer == 0:
-            if self.texture_num == 0:
-                self.texture_num = 1
+        if not self.hidden:
+            if self.change_x == 0 and self.change_y == 0:
+                if self._character_direction == "left" or self._character_direction == "right":
+                    if self._walk_texture_num != 0:
+                        self.texture = self.walk_textures[self._character_direction][0]
+                self.texture = self.idle_textures[self._character_direction]
+                self._walk_texture_num = 0
+                self._animation_timer = 0
+            elif self._animation_timer == 0:
+                if self._walk_texture_num == 0:
+                    self._walk_texture_num = 1
+                else:
+                    self._walk_texture_num = 0
             else:
-                self.texture_num = 0
-        else:
-            self.animation_timer += 1
+                self._animation_timer += 1
 
-        if self.change_x < 0:
-            self.character_direction = "left"
-            self.texture = self.walk_textures["left"][self.texture_num]
-            self.animation_timer += 1
-        elif self.change_x > 0:
-            self.character_direction = "right"
-            self.texture = self.walk_textures["right"][self.texture_num]
-            self.animation_timer += 1
-        elif self.change_y < 0:
-            self.character_direction = "down"
-            self.texture = self.walk_textures["down"][self.texture_num]
-            self.animation_timer += 1
-        elif self.change_y > 0:
-            self.character_direction = "up"
-            self.texture = self.walk_textures["up"][self.texture_num]
-            self.animation_timer += 1
+            if self.change_x < 0:
+                self._character_direction = "left"
+                self.texture = self.walk_textures["left"][self._walk_texture_num]
+                self._animation_timer += 1
+            elif self.change_x > 0:
+                self._character_direction = "right"
+                self.texture = self.walk_textures["right"][self._walk_texture_num]
+                self._animation_timer += 1
+            elif self.change_y < 0:
+                self._character_direction = "down"
+                self.texture = self.walk_textures["down"][self._walk_texture_num]
+                self._animation_timer += 1
+            elif self.change_y > 0:
+                self._character_direction = "up"
+                self.texture = self.walk_textures["up"][self._walk_texture_num]
+                self._animation_timer += 1
 
-        if self.animation_timer > 8 * 3 - (self.speed * 3):
-            self.animation_timer = 0
+            if self._animation_timer > 7 * 3 - (self._speed * 3):
+                self._animation_timer = 0
 
 
 class Trainer:
@@ -419,3 +506,4 @@ def binary_search(target: int, numbers: List) -> int:
     return -1
 
 
+    return new_array
