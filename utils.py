@@ -30,59 +30,44 @@ class FakeDirector:
             exit()
 
 
-class Attack():
+class Attack:
     attacks = []
 
-<<<<<<< HEAD
-    def __init__(self, attack_name: str, attack_power: int,
-                 attack_type: str, attack_audio: str = None):
-        self._attack_name = attack_name.lower()
-=======
     def __init__(self, attack: str, attack_power: int,
                  attack_type: str, attack_audio: str = None):
         self._attack = attack.lower()
->>>>>>> 83c4a5e33573430e553511ee0168d7be13bf0bc5
         self._attack_power = attack_power
         self._attack_type = attack_type.lower()
         self._attack_audio = attack_audio
         Attack.attacks.append(self)
 
-    def set_attack_name(self, attack: str, which: int):
-        self.attacks[which]._attack_name = attack.lower()
-
-    def get_attack_name(self, which: int):
-        return self.attacks[which]._attack_name
     def set_attack(self, attack: str):
         self._attack = attack.lower()
 
     def get_attack(self):
         return self._attack
 
-    def set_attack_power(self, attack_power: int, which: int):
-        self.attacks[which]._attack_power = attack_power
+    def set_attack_power(self, attack_power: int):
+        self._attack_power = attack_power
 
-    def get_attack_power(self, which: int):
-        return self.attacks[which]._attack_power
+    def get_attack_power(self):
+        return self._attack_power
 
-    def set_attack_type(self, type: str, which: int):
-        self.attacks[which]._attack_type = type.lower()
+    def set_attack_type(self, type: str):
+        self._attack_type = type.lower()
 
-    def get_attack_type(self, which: int):
-        return self.attacks[which]._attack_type
+    def get_attack_type(self):
+        return self._attack_type
 
-    def set_attack_audio(self, audio: str, which: int):
-        self.attacks[which]._attack_audio = audio
+    def set_attack_audio(self, audio: str):
+        self._attack_audio = audio
 
-    def get_attack_audio(self, which: int):
-        return self.attacks[which]._attack_audio
+    def get_attack_audio(self):
+        return self._attack_audio
 
 
-class Pokemon(Attack):
+class Pokemon:
     def __init__(self, name: str, health_points: int, Type: str, passive_ability: str, image: str, sound: str, level: int,
-                 attack:str=None, attack_power:int=None, attack_type:str=None, attack_audio:str=None,
-                 moveset2:Dict[str,dict]=None, experience_points: int = 0, item: str = None):
-        if attack != None and attack_power != None and attack_type != None:
-            super().__init__(attack, attack_power, attack_type, attack_audio)
                  moveset:List[str]=None, moveset2:Dict[str,dict]=None, experience_points: int = 0, item: str = None):
         self._name = name
         self._max_hp = health_points
@@ -92,6 +77,7 @@ class Pokemon(Attack):
         self._debuff = None
         self._image = image
         self._lvl = level
+        self._moveset = moveset
         self._moveset2 = moveset2
         self._exp = experience_points
         self._item = item
@@ -129,7 +115,7 @@ class Pokemon(Attack):
     def get_debuff(self):
         return self._debuff
 
-    def get_attack(self, attack: int):
+    def get_moveset(self, attack: int):
         return Attack.attacks[attack]
 
     def add_attack(self, attack: str, power: int,
@@ -439,17 +425,18 @@ class PokemonSprite(arcade.Sprite):
                             self._movement["right"] = True
                             self._movement["left"] = False
 
-
             if self._movement["up"] and self.top < self.boundary_top:
                 if len(collision_list) > 0:
-                    self._movement["up"] = False
-                    self.change_y = -self._speed
+                    if self._entity_type == "player" or self.collides_with_sprite(PokemonSprite.player):
+                        self.change_y = -self._speed
+                        self._movement["up"] = False
                 else:
                     self.change_y = self._speed
             elif self._movement["down"] and self.bottom > self.boundary_bottom:
                 if len(collision_list) > 0:
-                    self._movement["down"] = False
-                    self.change_y = self._speed
+                    if self._entity_type == "player" or self.collides_with_sprite(PokemonSprite.player):
+                        self.change_y = self._speed
+                        self._movement["down"] = False
                 else:
                     self.change_y = -self._speed
             else:
@@ -457,14 +444,15 @@ class PokemonSprite(arcade.Sprite):
 
             if self._movement["left"] and self.left > self.boundary_left:
                 if len(collision_list) > 0:
-                    self._movement["left"] = False
-                    self.change_x = self._speed
+                    if self._entity_type == "player" or self.collides_with_sprite(PokemonSprite.player):
+                        self.change_x = self._speed
+                        self._movement["left"] = False
                 else:
                     self.change_x = -self._speed
             elif self._movement["right"] and self.right < self.boundary_right:
                 if len(collision_list) > 0:
-                    self._movement["right"] = False
-                    self.change_x = -self._speed
+                    if self._entity_type == "player" or self.collides_with_sprite(PokemonSprite.player):
+                        self.change_x = -self._speed
                 else:
                     self.change_x = self._speed
             else:
@@ -517,7 +505,7 @@ class PokemonSprite(arcade.Sprite):
             self._animation_timer = 0
 
 
-class Trainer():
+class Trainer:
     def __init__(self, name: str, pokemons: List[Pokemon],
                  items: Dict[str, int] = None, money: int = None):
         self._name = name.lower()
@@ -608,26 +596,6 @@ class Battle():  # IN PROGRESS
         self._cpu = cpu
         self._wild_pokemon = wild_pokemon
         self._moveset = player._pokemons[0].get_moveset
-        self._player_win = False
-        self._player_lose = False
-    
-    def check_hps(self, hps: List[int]) -> int:
-        if len(hps) == 1:
-            if hps[0] == 0:
-                return 0
-            elif hps[0] > 0:
-                return 1
-
-        if hps[0] == 0:
-            return 0 + self.check_hps(hps[1:])
-        elif hps[0] > 0:
-            return 1 + self.check_hps(hps[1:])
-
-    def check_for_win(self, player_poke_hp: List[int], enemy_poke_hp: List[int]) -> bool:
-        if self.check_hps(player_poke_hp) + self.check_hps(enemy_poke_hp) == 0:
-            return True
-        else:
-            return False
 
     def attack(self, pokemon: object, ability, opponent: object):
         # moveset = {"ability name": {"type": str, "power_points": int, "damage": int, "debuffs: str/None"}}

@@ -31,7 +31,6 @@ SQUIRTLE.add_attack("bubble beam", 40, "water")
 SQUIRTLE.add_attack("hydro pump", 120, "water")
 SQUIRTLE.add_attack("scratch", 70, "normal")
 SQUIRTLE.add_attack("shell tackle", 90, "fighting")
-print(SQUIRTLE.attacks)
 CHARAMANDER = utils.Pokemon("Charamander", 650, "fire", "fired up", "", "", 17)
 CHARAMANDER.add_attack("flamethrower", 100, "fire")
 CHARAMANDER.add_attack("scratch", 40, "normal")
@@ -72,10 +71,10 @@ PLAYER_ITEMS = {"Pokeballs":  20,
          "Defense pill": 17,
          "Elemental pill": 20,
          "Berries": 40}
-PLAYER = utils.Player("Sir Gallo", POKEMONS, PLAYER_ITEMS, 3000)
-ENEMY = utils.Player("Sir Fabroa", POKEMONS, PLAYER_ITEMS, 1000)
+# PLAYER = utils.Player("Sir Gallo", POKEMONS, PLAYER_ITEMS, 3000)
+# ENEMY = utils.Player("Sir Fabroa", POKEMONS, PLAYER_ITEMS, 1000)
 
-THE_BATTLE = utils.Battle(PLAYER, ENEMY)
+# THE_BATTLE = utils.Battle(PLAYER, ENEMY)
 
 strengths = {"bug": ["grass", "dark", "psychic"], "dark": ["ghost", "psychic"],
              "dragon": ["dragon"], "electric": ["flying", "water"], "fairy": ["fighting", "dark", "dragon"],

@@ -12,11 +12,11 @@ class MINIGAME(arcade.View):
             self.enemy = utils.Pokemon("Rattata", 200, "normal", "", "", "", 4,
                                         moveset2={"Normal": {"Name": "Electro Ball", "Damage": 0.6, "Cooldown": [40, 40],
                                                             "Sprite Type": ["Projectile"], "Speed": 8, "Scale": 0.4}})
-            self.enemy = utils.PokemonSprite("enemy", self.enemy, (300, 300), 2, pathing="follow")
+            self.enemy = utils.PokemonSprite("enemy", self.enemy, (300, 300), 1, pathing="follow")
             self.enemy = utils.Pokemon("Rattata", 200, "normal", "", "", "", 4,
                                         moveset2={"Normal": {"Name": "Electro Ball", "Damage": 0.6, "Cooldown": [40, 40],
                                                             "Sprite Type": ["Projectile"], "Speed": 8, "Scale": 0.4}})
-            self.enemy = utils.PokemonSprite("enemy", self.enemy, (500, 300), 2, pathing="follow")
+            # self.enemy = utils.PokemonSprite("enemy", self.enemy, (500, 300), 2, pathing="follow")
             self.pokemon = utils.Pokemon("Pikachu", 100, "electric", "", "", "", 10,
                                          moveset2={"Normal": {"Name": "Electro Ball", "Damage": 5, "Cooldown": [40, 40],
                                                               "Sprite Type": ["Projectile"], "Speed": 8, "Scale": 0.4},
