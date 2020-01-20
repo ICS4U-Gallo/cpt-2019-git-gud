@@ -426,7 +426,6 @@ class PokemonSprite(arcade.Sprite):
                             self._movement["left"] = False
 
 
-
             if self._movement["up"] and self.top < self.boundary_top:
                 if len(collision_list) > 0:
                     self._movement["up"] = False
