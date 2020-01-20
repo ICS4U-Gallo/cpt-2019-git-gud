@@ -66,17 +66,19 @@ class Attack:
         return self._attack_audio
 
 
-class Pokemon(Attack):
-    def __init__(self, name: str, health_points: int, Type: str, passive_ability: str, moveset: List[str],
-                 image: str, sound: str, level: int, experience_points: int = 0, item: str = None):
+class Pokemon:
+    def __init__(self, name: str, health_points: int, Type: str, passive_ability: str, image: str, sound: str, level: int,
+                 moveset:List[str]=None, moveset2:Dict[str,dict]=None, experience_points: int = 0, item: str = None):
         self._name = name
-        self._hp = health_points
+        self._max_hp = health_points
+        self._current_hp = health_points
         self._type = Type.lower()
         self._passive = passive_ability
-        self._debuff = None-
-        self._moveset = moveset
+        self._debuff = None
         self._image = image
         self._lvl = level
+        self._moveset = moveset
+        self._moveset2 = moveset2
         self._exp = experience_points
         self._item = item
 
@@ -86,10 +88,16 @@ class Pokemon(Attack):
     def set_name(self, name: str):
         self._name = name.lower()
 
-    def get_hp(self):
-        return self._hp
+    def get_max_hp(self):
+        return self._max_hp
 
-    def set_hp(self, hp: int):
+    def set_max_hp(self, hp: int):
+        self._hp = hp
+
+    def get_current_hp(self):
+        return self._current_hp
+
+    def set_current_hp(self, hp: int):
         self._hp = hp
 
     def get_type(self):
@@ -148,27 +156,121 @@ class Pokemon(Attack):
         self._item = item.capitalize()
 
 
-class Entity(arcade.Sprite):
-    player = []
-    enemy = []
-    def __init__(self, entity_type: str, pokemon: object, location: tuple, speed:int=1, detection_range:int=50, direction:str="down"):
+class AttackSprite(arcade.Sprite):
+    all_attacks = arcade.SpriteList()
+    def __init__(self, pokemon_sprite: object, attack_info: Dict, attack_tier: str, boundary:Dict[str,int]):
+        super().__init__()
+        self.direction = pokemon_sprite._character_direction
+        self.ally = pokemon_sprite._entity_type
+        self.tier = attack_tier
+        self.name = attack_info["Name"].lower()
+        self.damage = attack_info["Damage"]
+        self.sprite_type = attack_info["Sprite Type"][0]
+        self.speed = attack_info["Speed"]
+        self.scale = attack_info["Scale"]
+        if len(attack_info["Sprite Type"]) > 1:
+            self.reflection = attack_info["Sprite Type"][1]
+            self.animate = False
+        self.texture = arcade.load_texture(f"images/attacks/{self.name}.png", scale=self.scale)
+        if self.sprite_type == "Projectile":
+            if self.direction == "up":
+                self.set_position(pokemon_sprite.center_x, pokemon_sprite.top-10)
+            elif self.direction == "down":
+                self.set_position(pokemon_sprite.center_x, pokemon_sprite.bottom+10)
+            elif self.direction == "left":
+                self.set_position(pokemon_sprite.left+10, pokemon_sprite.center_y-10)
+            elif self.direction == "right":
+                self.set_position(pokemon_sprite.right-10, pokemon_sprite.center_y-10)
+            self.boundary_top = boundary["top"]
+            self.boundary_bottom = boundary["bottom"]
+            self.boundary_left = boundary["left"]
+            self.boundary_right = boundary["right"]
+        elif self.sprite_type == "Stationary":
+            if self.direction == "up":
+                self.set_position(pokemon_sprite.center_x, pokemon_sprite.top+self.height//2)
+            elif self.direction == "down":
+                self.set_position(pokemon_sprite.center_x, pokemon_sprite.bottom-self.height//2)
+            elif self.direction == "left":
+                self.set_position(pokemon_sprite.left-self.width//2, pokemon_sprite.center_y+self.height//2)
+            elif self.direction == "right":
+                self.set_position(pokemon_sprite.right+self.width//2, pokemon_sprite.bottom+self.height//2)
+            self.timer = 100
+        AttackSprite.all_attacks.append(self)
+
+    def remove(self):
+        self.remove_from_sprite_lists()
+    
+    @classmethod
+    def remove_all(cls):
+        for sprite in cls.all_attacks:
+            sprite.remove_from_sprite_lists()
+            
+    def update(self):
+        if self.sprite_type == "Projectile":
+            if self.direction == "up":
+                self.center_y += self.speed
+                if self.bottom >= self.boundary_top:
+                    self.remove()
+            elif self.direction == "down":
+                self.center_y -= self.speed
+                if self.top <= self.boundary_bottom:
+                    self.remove()
+            elif self.direction == "left":
+                self.center_x -= self.speed
+                if self.right <= self.boundary_left:
+                    self.remove()
+            elif self.direction == "right":
+                self.center_x += self.speed
+                if self.left >= self.boundary_right:
+                    self.remove()
+        elif self.sprite_type == "Stationary":
+            if self.timer == 0:
+                self.remove()
+            self.timer -= 1
+    
+    def update_animation(self, delta_time=1 /60):
+        if hasattr(self, "animate"):
+            if self.timer % 10 == 0:
+                if self.animate:
+                    self.animate = False
+                else:
+                    self.animate = True
+            if self.reflection == "Mirrored":
+                self.texture = arcade.load_texture(f"images/attacks/{self.name}.png", scale=self.scale, mirrored=self.animate)
+            elif self.reflection == "Flipped":
+                self.texture = arcade.load_texture(f"images/attacks/{self.name}.png", scale=self.scale, flipped=self.animate)
+
+
+
+class PokemonSprite(arcade.Sprite):
+    all_players = arcade.SpriteList()
+    all_enemies = arcade.SpriteList()
+    def __init__(self, entity_type: str, pokemon: object, location: tuple, speed:int, direction:str="down", detection_range:int=50, hidden:bool=None):
         super().__init__()
         self.pokemon = pokemon
         self._detection_range = detection_range
         self._entity_type = entity_type
-        self.hidden = False
-        if self._entity_type == "player":
-            Entity.player.append(self)
-        elif self._entity_type == "enemy":
-            self.hidden = True
-            Entity.enemy.append(self)
         self.set_position(location[0], location[1])
         self._character_direction = direction
         self._movement = {"up": False, "down": False,
                          "left": False, "right": False}
-        self.collided = False
         self._speed = speed
-        self._main_path = f"images\pokemon\{pokemon.get_name()}"
+        self.hidden = False
+        self.ability1 = self.pokemon._moveset2["Normal"]
+        self.ability1["Active"] = False
+        if self._entity_type == "player":
+            self.ability2 = self.pokemon._moveset2["Special"]
+            self.ability2["Active"] = False
+            PokemonSprite.all_players.append(self)
+        elif self._entity_type == "enemy":
+            if hidden is None:
+                self.hidden = True
+            else:
+                self.hidden = hidden
+            PokemonSprite.all_enemies.append(self)
+
+        self.collided = False
+        self._main_path = f"images/pokemon/{pokemon.get_name()}"
         self._animation_timer = 0
         self._walk_texture_num = 0
 
@@ -185,13 +287,13 @@ class Entity(arcade.Sprite):
                               "left": [], "right": []}
         for key in self.walk_textures.keys():
             texture1 = arcade.load_texture(
-                f"{self._main_path}\walk-{key}0.png", scale=1.5)
+                f"{self._main_path}/walk-{key}0.png", scale=1.5)
             if key == "left" or key == "right":
                 texture2 = arcade.load_texture(
-                    f"{self._main_path}\idle-{key}.png", scale=1.5)
+                    f"{self._main_path}/idle-{key}.png", scale=1.5)
             else:
                 texture2 = arcade.load_texture(
-                    f"{self._main_path}\walk-{key}1.png", scale=1.5)
+                    f"{self._main_path}/walk-{key}1.png", scale=1.5)
             self.walk_textures[key].append(texture1)
             self.walk_textures[key].append(texture2)
 
@@ -215,39 +317,89 @@ class Entity(arcade.Sprite):
     def get_character_direction(self):
         return self._character_direction
 
-    def set_boundaries(self, width: int, height: int):
-        self.boundary_top = height
-        self.boundary_bottom = 0
-        self.boundary_left = 0
-        self.boundary_right = width
+    @staticmethod
+    def boundary(top:int="default", bottom:int=0, left:int=0, right:int="default"):
+        if top == "default":
+            top = settings.HEIGHT
+        if right == "default":
+            right = settings.WIDTH
+        return {"top": top, "bottom": bottom, "left": left, "right": right}
 
-    def detected(self, detecting:str="player"):
+    def set_boundaries(self):
+        boundary = PokemonSprite.boundary()
+        self.boundary_top = boundary["top"]
+        self.boundary_bottom = boundary["bottom"]
+        self.boundary_left = boundary["left"]
+        self.boundary_right = boundary["right"]
+
+    @classmethod
+    def remove_all_enemies(cls):
+        for enemy in cls.all_enemies:
+            enemy.remove_from_sprite_lists()
+
+    def detect_stronger_enemies(self, enemies:List[object]=None):
+        if enemies is None:
+            enemies = self.all_enemies
+
+        if len(enemies) == 0:
+            return []
+        elif enemies[0].pokemon.get_lvl() >= self.pokemon.get_lvl() + 2:
+            return [enemies[0]] + self.detect_stronger_enemies(enemies[1:])
+        return self.detect_stronger_enemies(enemies[1:])
+
+    def detected(self):
         vision_field_x = list(range(int(self.left), int(self.right)))
         vision_field_y = list(range(int(self.bottom), int(self.top)))
         direction = self._character_direction
         detection_range = self._detection_range
-        if detecting == "player":
-            for player in Entity.player:
-                if direction == "up":
-                    if int(player.center_x) in vision_field_x and int(player.center_y) in range(int(self.center_y), int(self.top)+detection_range):
-                        return True
-                elif direction == "down":
-                    if int(player.center_x) in vision_field_x and int(player.center_y) in range(int(self.bottom)-detection_range, int(self.center_y)):
-                        return True
-                elif direction == "left":
-                    if int(player.center_y) in vision_field_y and int(player.center_x) in range(int(self.left)-detection_range, int(self.center_x)):
-                        return True
-                elif direction == "right":
-                    if int(player.center_y) in vision_field_y and int(player.center_x) in range(int(self.center_x), int(self.right)+detection_range):
-                        return True    
+        for player in PokemonSprite.all_players:
+            if direction == "up":
+                if int(player.center_x) in vision_field_x and int(player.center_y) in range(int(self.center_y), int(self.top)+detection_range):
+                    return True
+            elif direction == "down":
+                if int(player.center_x) in vision_field_x and int(player.center_y) in range(int(self.bottom)-detection_range, int(self.center_y)):
+                    return True
+            elif direction == "left":
+                if int(player.center_y) in vision_field_y and int(player.center_x) in range(int(self.left)-detection_range, int(self.center_x)):
+                    return True
+            elif direction == "right":
+                if int(player.center_y) in vision_field_y and int(player.center_x) in range(int(self.center_x), int(self.right)+detection_range):
+                    return True    
+
+    def attack1(self):
+        if self.ability1["Active"] and self.ability1["Cooldown"][0] == self.ability1["Cooldown"][1]:
+            AttackSprite(self, self.ability1, "normal", PokemonSprite.boundary())
+            self.ability1["Cooldown"][0] = 0
+            
+    def attack2(self):
+        if hasattr(self, "ability2"):
+            """
+            has a list of stronger opponents
+            checks to see if attacked in the list, stuns if true
+            damages other
+            """
+            if self.ability2["Active"] and self.ability2["Cooldown"][0] == self.ability2["Cooldown"][1]:
+                AttackSprite(self, self.ability2, "special", PokemonSprite.boundary())
+                self.ability2["Cooldown"][0] = 0
 
     def update(self):
-        if self in Entity.enemy and self.hidden:
+        if self in PokemonSprite.all_enemies and self.hidden:
             if self.detected():
                 self.texture = self.idle_textures[self._character_direction]
                 self.hidden = False
-                        
-        if self.pokemon.get_hp() <= 0:
+        
+        if self.ability1["Active"]:
+            self.attack1()
+        if self.ability1["Cooldown"][0] < self.ability1["Cooldown"][1]:
+            self.ability1["Cooldown"][0] += 1
+
+        if self._entity_type == "player":
+            if self.ability2["Active"]:
+                self.attack2()
+            if self.ability2["Cooldown"][0] < self.ability2["Cooldown"][1]:
+                self.ability2["Cooldown"][0] += 1
+
+        if self.pokemon.get_current_hp() <= 0:
             self.remove_from_sprite_lists()
 
         if self._movement["up"] and self.top < self.boundary_top:
@@ -256,7 +408,6 @@ class Entity(arcade.Sprite):
             self.change_y = -self._speed
         else:
             self.change_y = 0
-
         if self._movement["left"] and self.left > self.boundary_left:
             self.change_x = -self._speed
         elif self._movement["right"] and self.right < self.boundary_right:
@@ -363,18 +514,18 @@ class Player(Trainer):
 
 
 # class PC():
-    def __init__(self):
-        self._stored = {}
-        self._pages = []
+    # def __init__(self):
+    #     self._stored = {}
+    #     self._pages = []
 
-        for page in range(20):
-            for i in range(100):
-                self._stored[i] = None
-            self._pages[page] = self._stored
+    #     for page in range(20):
+    #         for i in range(100):
+    #             self._stored[i] = None
+    #         self._pages[page] = self._stored
 
-    def add_pokemon(self, page_number: int, place_number: int, pokemon: Pokemon):
-        for empty in self._stored[page_number]:
-            pass
+    # def add_pokemon(self, page_number: int, place_number: int, pokemon: Pokemon):
+    #     for empty in self._stored[page_number]:
+    #         pass
 
 
 class CPU(Trainer):  # IN PROGRESS
@@ -395,6 +546,27 @@ class Battle():  # IN PROGRESS
         self._cpu = cpu
         self._wild_pokemon = wild_pokemon
         self._moveset = player._pokemons[0].get_moveset
+        self._player_win = False
+        self._player_lose = False
+    
+
+    def check_hps(self, hps: List[int]) -> int:
+        if len(hps) == 1:
+            if hps[0] == 0:
+                return 0
+            elif hps[0] > 0:
+                return 1
+
+        if hps[0] == 0:
+            return 0 + check_hps(self, hps[1:])
+        elif hps[0] > 0:
+            return 1 + check_hps(self, hps[1:])
+
+    def check_for_win(self, player_poke_hp: List[int], enemy_poke_hp: List[int]) -> bool:
+        if check_hp(player_poke_hp) + check_hp(enemy_poke_hp) == 0:
+            return True
+        else:
+            return False
 
     def attack(self, pokemon: object, ability, opponent: object):
         # moveset = {"ability name": {"type": str, "power_points": int, "damage": int, "debuffs: str/None"}}
@@ -504,6 +676,3 @@ def binary_search(target: int, numbers: List) -> int:
         else:
             end = mid - 1
     return -1
-
-
-    return new_array

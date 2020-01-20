@@ -6,6 +6,7 @@ import utils
 class Chapter3View(arcade.View):
     def on_show(self):
         arcade.set_background_color(arcade.color.BLUE_BELL)
+        print(True)
         self.background = settings.BATTLE_BACKGROUND
         self.selected = 2
         self.btn_pokemon = False
@@ -448,7 +449,7 @@ class Chapter3View(arcade.View):
 
     def on_update(self, delta_time):
         if self.btn_fight_atk_1 and self.turn.lower() == "player":
-            
+            pass
 
 if __name__ == "__main__":
     """This section of code will allow you to run your View
