@@ -9,19 +9,25 @@ class MINIGAME(arcade.View):
     def on_show(self):
         arcade.set_background_color(arcade.color.ASH_GREY)
         if not settings.shown:
-            self.pokemon = utils.Pokemon("Pikachu", 100, "electric", "", "", "", 10,
+            self.enemy = utils.Pokemon("Pikachu", 200, "electric", "", "", "", 12,
                                          moveset2={"Normal": {"Name": "Electro Ball", "Damage": 0.6, "Cooldown": [40, 40],
                                                               "Sprite Type": ["Projectile"], "Speed": 8, "Scale": 0.4},
                                                    "Special": {"Name": "Thunder Bolt", "Damage": 1.2, "Cooldown": [120, 120],
                                                                "Sprite Type": ["Stationary", "Mirrored"], "Speed": 4, "Scale": 1}})
+            self.player = utils.PokemonSprite("enemy", self.enemy, (200, 100), 2)
+            self.pokemon = utils.Pokemon("Pikachu", 100, "electric", "", "", "", 10,
+                                         moveset2={"Normal": {"Name": "Electro Ball", "Damage": 5, "Cooldown": [40, 40],
+                                                              "Sprite Type": ["Projectile"], "Speed": 8, "Scale": 0.4},
+                                                   "Special": {"Name": "Thunder Bolt", "Damage": 1, "Cooldown": [240, 240],
+                                                               "Sprite Type": ["Stationary", "Mirrored"], "Speed": 4, "Scale": 1}})
             self.player = utils.PokemonSprite("player", self.pokemon, (100, 100), 2)
             self.player.set_boundaries()
-            self.player.stronger_enemies = self.player.detect_stronger_enemies()
+            utils.PokemonSprite.stronger_enemies = utils.PokemonSprite.detect_stronger_enemies()
             settings.shown = True
 
     def on_draw(self):
         arcade.start_render()
-        utils.PokemonSprite.all_players.draw()
+        utils.PokemonSprite.player.draw()
         utils.PokemonSprite.all_enemies.draw()
         utils.AttackSprite.all_attacks.draw()
 
@@ -59,8 +65,8 @@ class MINIGAME(arcade.View):
             self.player.ability2["Active"] = False
 
     def on_update(self, delta_time):
-        utils.PokemonSprite.all_players.update()
-        utils.PokemonSprite.all_players.update_animation()
+        utils.PokemonSprite.player.update()
+        utils.PokemonSprite.player.update_animation()
         utils.PokemonSprite.all_enemies.update()
         utils.PokemonSprite.all_enemies.update_animation()
         utils.AttackSprite.all_attacks.update()

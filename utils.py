@@ -168,6 +168,8 @@ class AttackSprite(arcade.Sprite):
         self.sprite_type = attack_info["Sprite Type"][0]
         self.speed = attack_info["Speed"]
         self.scale = attack_info["Scale"]
+        self.collided = False
+        self._set_alpha(180)
         if len(attack_info["Sprite Type"]) > 1:
             self.reflection = attack_info["Sprite Type"][1]
             self.animate = False
@@ -189,16 +191,13 @@ class AttackSprite(arcade.Sprite):
             if self.direction == "up":
                 self.set_position(pokemon_sprite.center_x, pokemon_sprite.top+self.height//2)
             elif self.direction == "down":
-                self.set_position(pokemon_sprite.center_x, pokemon_sprite.bottom-self.height//2)
+                self.set_position(pokemon_sprite.center_x, pokemon_sprite.bottom+self.height//2)
             elif self.direction == "left":
-                self.set_position(pokemon_sprite.left-self.width//2, pokemon_sprite.center_y+self.height//2)
+                self.set_position(pokemon_sprite.left-self.width//2, pokemon_sprite.bottom+self.height//2)
             elif self.direction == "right":
                 self.set_position(pokemon_sprite.right+self.width//2, pokemon_sprite.bottom+self.height//2)
             self.timer = 100
         AttackSprite.all_attacks.append(self)
-
-    def remove(self):
-        self.remove_from_sprite_lists()
     
     @classmethod
     def remove_all(cls):
@@ -207,25 +206,27 @@ class AttackSprite(arcade.Sprite):
             
     def update(self):
         if self.sprite_type == "Projectile":
+            if self.collided:
+                self.remove_from_sprite_lists()
             if self.direction == "up":
                 self.center_y += self.speed
                 if self.bottom >= self.boundary_top:
-                    self.remove()
+                    self.remove_from_sprite_lists()
             elif self.direction == "down":
                 self.center_y -= self.speed
                 if self.top <= self.boundary_bottom:
-                    self.remove()
+                    self.remove_from_sprite_lists()
             elif self.direction == "left":
                 self.center_x -= self.speed
                 if self.right <= self.boundary_left:
-                    self.remove()
+                    self.remove_from_sprite_lists()
             elif self.direction == "right":
                 self.center_x += self.speed
                 if self.left >= self.boundary_right:
-                    self.remove()
+                    self.remove_from_sprite_lists()
         elif self.sprite_type == "Stationary":
             if self.timer == 0:
-                self.remove()
+                self.remove_from_sprite_lists()
             self.timer -= 1
     
     def update_animation(self, delta_time=1 /60):
@@ -243,9 +244,10 @@ class AttackSprite(arcade.Sprite):
 
 
 class PokemonSprite(arcade.Sprite):
-    all_players = arcade.SpriteList()
+    player = None
     all_enemies = arcade.SpriteList()
-    def __init__(self, entity_type: str, pokemon: object, location: tuple, speed:int, direction:str="down", detection_range:int=50, hidden:bool=None):
+    stronger_enemies = []
+    def __init__(self, entity_type: str, pokemon: object, location: tuple, speed:int, direction:str="down", detection_range:int=50):
         super().__init__()
         self.pokemon = pokemon
         self._detection_range = detection_range
@@ -255,26 +257,21 @@ class PokemonSprite(arcade.Sprite):
         self._movement = {"up": False, "down": False,
                          "left": False, "right": False}
         self._speed = speed
-        self.hidden = False
+        self.stunned = False
+        self.stun_duration = 80
         self.ability1 = self.pokemon._moveset2["Normal"]
         self.ability1["Active"] = False
         if self._entity_type == "player":
             self.ability2 = self.pokemon._moveset2["Special"]
             self.ability2["Active"] = False
-            PokemonSprite.all_players.append(self)
+            PokemonSprite.player = self
         elif self._entity_type == "enemy":
-            if hidden is None:
-                self.hidden = True
-            else:
-                self.hidden = hidden
             PokemonSprite.all_enemies.append(self)
 
         self.collided = False
         self._main_path = f"images/pokemon/{pokemon.get_name()}"
         self._animation_timer = 0
         self._walk_texture_num = 0
-
-        self.hidden_visual = arcade.load_texture("images/transparent.png")
 
         self.idle_textures = {"up": None, "down": None,
                               "left": None, "right": None}
@@ -297,10 +294,7 @@ class PokemonSprite(arcade.Sprite):
             self.walk_textures[key].append(texture1)
             self.walk_textures[key].append(texture2)
 
-        if self.hidden:
-            self.texture = self.hidden_visual
-        else:
-            self.texture = self.idle_textures[self._character_direction]
+        self.texture = self.idle_textures[self._character_direction]
 
     def get_speed(self):
         return self._speed
@@ -336,35 +330,17 @@ class PokemonSprite(arcade.Sprite):
     def remove_all_enemies(cls):
         for enemy in cls.all_enemies:
             enemy.remove_from_sprite_lists()
+        cls.stronger_enemies = []
 
-    def detect_stronger_enemies(self, enemies:List[object]=None):
+    @classmethod
+    def detect_stronger_enemies(cls, enemies:List[object]=None):
         if enemies is None:
-            enemies = self.all_enemies
-
+            enemies = cls.all_enemies
         if len(enemies) == 0:
             return []
-        elif enemies[0].pokemon.get_lvl() >= self.pokemon.get_lvl() + 2:
-            return [enemies[0]] + self.detect_stronger_enemies(enemies[1:])
-        return self.detect_stronger_enemies(enemies[1:])
-
-    def detected(self):
-        vision_field_x = list(range(int(self.left), int(self.right)))
-        vision_field_y = list(range(int(self.bottom), int(self.top)))
-        direction = self._character_direction
-        detection_range = self._detection_range
-        for player in PokemonSprite.all_players:
-            if direction == "up":
-                if int(player.center_x) in vision_field_x and int(player.center_y) in range(int(self.center_y), int(self.top)+detection_range):
-                    return True
-            elif direction == "down":
-                if int(player.center_x) in vision_field_x and int(player.center_y) in range(int(self.bottom)-detection_range, int(self.center_y)):
-                    return True
-            elif direction == "left":
-                if int(player.center_y) in vision_field_y and int(player.center_x) in range(int(self.left)-detection_range, int(self.center_x)):
-                    return True
-            elif direction == "right":
-                if int(player.center_y) in vision_field_y and int(player.center_x) in range(int(self.center_x), int(self.right)+detection_range):
-                    return True    
+        elif enemies[0].pokemon.get_lvl() >= PokemonSprite.player.pokemon.get_lvl() + 2:
+            return [enemies[0]] + cls.detect_stronger_enemies(enemies[1:])
+        return cls.detect_stronger_enemies(enemies[1:])
 
     def attack1(self):
         if self.ability1["Active"] and self.ability1["Cooldown"][0] == self.ability1["Cooldown"][1]:
@@ -373,86 +349,100 @@ class PokemonSprite(arcade.Sprite):
             
     def attack2(self):
         if hasattr(self, "ability2"):
-            """
-            has a list of stronger opponents
-            checks to see if attacked in the list, stuns if true
-            damages other
-            """
             if self.ability2["Active"] and self.ability2["Cooldown"][0] == self.ability2["Cooldown"][1]:
                 AttackSprite(self, self.ability2, "special", PokemonSprite.boundary())
                 self.ability2["Cooldown"][0] = 0
+    
+    def damaged(self):
+        stronger = False
+        if self in PokemonSprite.all_enemies:
+            stronger = True
+        for attack in self.collides_with_list(AttackSprite.all_attacks):
+            if attack.ally != self._entity_type:
+                self.pokemon._current_hp -= attack.damage
+                if attack.tier == "special":
+                    self.stunned = True
+                    self.stun_duration = 80
+                else:
+                    attack.collided = True
 
     def update(self):
-        if self in PokemonSprite.all_enemies and self.hidden:
-            if self.detected():
-                self.texture = self.idle_textures[self._character_direction]
-                self.hidden = False
-        
-        if self.ability1["Active"]:
-            self.attack1()
-        if self.ability1["Cooldown"][0] < self.ability1["Cooldown"][1]:
-            self.ability1["Cooldown"][0] += 1
-
-        if self._entity_type == "player":
-            if self.ability2["Active"]:
-                self.attack2()
-            if self.ability2["Cooldown"][0] < self.ability2["Cooldown"][1]:
-                self.ability2["Cooldown"][0] += 1
-
         if self.pokemon.get_current_hp() <= 0:
             self.remove_from_sprite_lists()
+        
+        if len(self.collides_with_list(AttackSprite.all_attacks)) > 0:
+            self.damaged()
+        
+        if not self.stunned:
+            self._set_alpha(250)
+            if self.ability1["Active"]:
+                self.attack1()
+            if self.ability1["Cooldown"][0] < self.ability1["Cooldown"][1]:
+                self.ability1["Cooldown"][0] += 1
 
-        if self._movement["up"] and self.top < self.boundary_top:
-            self.change_y = self._speed
-        elif self._movement["down"] and self.bottom > self.boundary_bottom:
-            self.change_y = -self._speed
-        else:
-            self.change_y = 0
-        if self._movement["left"] and self.left > self.boundary_left:
-            self.change_x = -self._speed
-        elif self._movement["right"] and self.right < self.boundary_right:
-            self.change_x = self._speed
-        else:
-            self.change_x = 0
+            if self._entity_type == "player":
+                if self.ability2["Active"]:
+                    self.attack2()
+                if self.ability2["Cooldown"][0] < self.ability2["Cooldown"][1]:
+                    self.ability2["Cooldown"][0] += 1
 
-        self.position = [self._position[0] + self.change_x, self._position[1] + self.change_y]
+            if self._movement["up"] and self.top < self.boundary_top:
+                self.change_y = self._speed
+            elif self._movement["down"] and self.bottom > self.boundary_bottom:
+                self.change_y = -self._speed
+            else:
+                self.change_y = 0
+            if self._movement["left"] and self.left > self.boundary_left:
+                self.change_x = -self._speed
+            elif self._movement["right"] and self.right < self.boundary_right:
+                self.change_x = self._speed
+            else:
+                self.change_x = 0
+
+            self.position = [self._position[0] + self.change_x, self._position[1] + self.change_y]
+        else:
+            if self.stun_duration == 0:
+                self.stun_duration = 100
+                self.stunned = False
+            self.stun_duration -= 1
+            self._set_alpha(180)
+
 
     def update_animation(self, delta_time: float = 1/60):
-        if not self.hidden:
-            if self.change_x == 0 and self.change_y == 0:
-                if self._character_direction == "left" or self._character_direction == "right":
-                    if self._walk_texture_num != 0:
-                        self.texture = self.walk_textures[self._character_direction][0]
-                self.texture = self.idle_textures[self._character_direction]
-                self._walk_texture_num = 0
-                self._animation_timer = 0
-            elif self._animation_timer == 0:
-                if self._walk_texture_num == 0:
-                    self._walk_texture_num = 1
-                else:
-                    self._walk_texture_num = 0
+        if self.change_x == 0 and self.change_y == 0:
+            if self._character_direction == "left" or self._character_direction == "right":
+                if self._walk_texture_num != 0:
+                    self.texture = self.walk_textures[self._character_direction][0]
+            self.texture = self.idle_textures[self._character_direction]
+            self._walk_texture_num = 0
+            self._animation_timer = 0
+        elif self._animation_timer == 0:
+            if self._walk_texture_num == 0:
+                self._walk_texture_num = 1
             else:
-                self._animation_timer += 1
+                self._walk_texture_num = 0
+        else:
+            self._animation_timer += 1
 
-            if self.change_x < 0:
-                self._character_direction = "left"
-                self.texture = self.walk_textures["left"][self._walk_texture_num]
-                self._animation_timer += 1
-            elif self.change_x > 0:
-                self._character_direction = "right"
-                self.texture = self.walk_textures["right"][self._walk_texture_num]
-                self._animation_timer += 1
-            elif self.change_y < 0:
-                self._character_direction = "down"
-                self.texture = self.walk_textures["down"][self._walk_texture_num]
-                self._animation_timer += 1
-            elif self.change_y > 0:
-                self._character_direction = "up"
-                self.texture = self.walk_textures["up"][self._walk_texture_num]
-                self._animation_timer += 1
+        if self.change_x < 0:
+            self._character_direction = "left"
+            self.texture = self.walk_textures["left"][self._walk_texture_num]
+            self._animation_timer += 1
+        elif self.change_x > 0:
+            self._character_direction = "right"
+            self.texture = self.walk_textures["right"][self._walk_texture_num]
+            self._animation_timer += 1
+        elif self.change_y < 0:
+            self._character_direction = "down"
+            self.texture = self.walk_textures["down"][self._walk_texture_num]
+            self._animation_timer += 1
+        elif self.change_y > 0:
+            self._character_direction = "up"
+            self.texture = self.walk_textures["up"][self._walk_texture_num]
+            self._animation_timer += 1
 
-            if self._animation_timer > 7 * 3 - (self._speed * 3):
-                self._animation_timer = 0
+        if self._animation_timer > 7 * 3 - (self._speed * 3):
+            self._animation_timer = 0
 
 
 class Trainer:
