@@ -247,7 +247,7 @@ class PokemonSprite(arcade.Sprite):
     player = None
     all_enemies = arcade.SpriteList()
     stronger_enemies = []
-    def __init__(self, entity_type: str, pokemon: object, location: tuple, speed:int, direction:str="down", detection_range:int=50):
+    def __init__(self, entity_type: str, pokemon: object, location: tuple, speed:int, direction:str="down", detection_range:int=50, pathing=None):
         super().__init__()
         self.pokemon = pokemon
         self._detection_range = detection_range
@@ -266,9 +266,10 @@ class PokemonSprite(arcade.Sprite):
             self.ability2["Active"] = False
             PokemonSprite.player = self
         elif self._entity_type == "enemy":
+            self.pathing = pathing
             PokemonSprite.all_enemies.append(self)
 
-        self.collided = False
+        self._set_collision_radius(16)
         self._main_path = f"images/pokemon/{pokemon.get_name()}"
         self._animation_timer = 0
         self._walk_texture_num = 0
@@ -399,15 +400,32 @@ class PokemonSprite(arcade.Sprite):
                     self.ability2["Cooldown"][0] += 1
 
             if self._movement["up"] and self.top < self.boundary_top:
-                self.change_y = self._speed
+                if len(self.collides_with_list(PokemonSprite.all_enemies)) > 0:
+                    self._movement["up"] = False
+                    self.change_y = -self._speed
+                else:
+                    self.change_y = self._speed
             elif self._movement["down"] and self.bottom > self.boundary_bottom:
-                self.change_y = -self._speed
+                if len(self.collides_with_list(PokemonSprite.all_enemies)) > 0:
+                    self._movement["down"] = False
+                    self.change_y = self._speed
+                else:
+                    self.change_y = -self._speed
             else:
                 self.change_y = 0
+
             if self._movement["left"] and self.left > self.boundary_left:
-                self.change_x = -self._speed
+                if len(self.collides_with_list(PokemonSprite.all_enemies)) > 0:
+                    self._movement["left"] = False
+                    self.change_x = self._speed
+                else:
+                    self.change_x = -self._speed
             elif self._movement["right"] and self.right < self.boundary_right:
-                self.change_x = self._speed
+                if len(self.collides_with_list(PokemonSprite.all_enemies)) > 0:
+                    self._movement["right"] = False
+                    self.change_x = -self._speed
+                else:
+                    self.change_x = self._speed
             else:
                 self.change_x = 0
 
@@ -436,19 +454,19 @@ class PokemonSprite(arcade.Sprite):
         else:
             self._animation_timer += 1
 
-        if self.change_x < 0:
+        if self._movement["left"]:
             self._character_direction = "left"
             self.texture = self.walk_textures["left"][self._walk_texture_num]
             self._animation_timer += 1
-        elif self.change_x > 0:
+        elif self._movement["right"]:
             self._character_direction = "right"
             self.texture = self.walk_textures["right"][self._walk_texture_num]
             self._animation_timer += 1
-        elif self.change_y < 0:
+        elif self._movement["down"]:
             self._character_direction = "down"
             self.texture = self.walk_textures["down"][self._walk_texture_num]
             self._animation_timer += 1
-        elif self.change_y > 0:
+        elif self._movement["up"]:
             self._character_direction = "up"
             self.texture = self.walk_textures["up"][self._walk_texture_num]
             self._animation_timer += 1
