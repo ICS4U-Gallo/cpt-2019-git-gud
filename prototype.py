@@ -9,16 +9,14 @@ class MINIGAME(arcade.View):
     def on_show(self):
         arcade.set_background_color(arcade.color.ASH_GREY)
         if not settings.shown:
-            self.enemy = utils.Pokemon("Pikachu", 200, "electric", "", "", "", 12,
+            self.enemy = utils.Pokemon("Rattata", 200, "normal", "", "", "", 12,
                                          moveset2={"Normal": {"Name": "Electro Ball", "Damage": 0.6, "Cooldown": [40, 40],
-                                                              "Sprite Type": ["Projectile"], "Speed": 8, "Scale": 0.4},
-                                                   "Special": {"Name": "Thunder Bolt", "Damage": 1.2, "Cooldown": [120, 120],
-                                                               "Sprite Type": ["Stationary", "Mirrored"], "Speed": 4, "Scale": 1}})
+                                                              "Sprite Type": ["Projectile"], "Speed": 8, "Scale": 0.4}})
             self.player = utils.PokemonSprite("enemy", self.enemy, (200, 100), 2)
             self.pokemon = utils.Pokemon("Pikachu", 100, "electric", "", "", "", 10,
                                          moveset2={"Normal": {"Name": "Electro Ball", "Damage": 5, "Cooldown": [40, 40],
                                                               "Sprite Type": ["Projectile"], "Speed": 8, "Scale": 0.4},
-                                                   "Special": {"Name": "Thunder Bolt", "Damage": 1, "Cooldown": [240, 240],
+                                                   "Special": {"Name": "ThunderBolt", "Damage": 1, "Cooldown": [240, 240],
                                                                "Sprite Type": ["Stationary", "Mirrored"], "Speed": 4, "Scale": 1}})
             self.player = utils.PokemonSprite("player", self.pokemon, (100, 100), 2)
             self.player.set_boundaries()
