@@ -162,6 +162,8 @@ class AttackSprite(arcade.Sprite):
         super().__init__()
         self.direction = pokemon_sprite._character_direction
         self.ally = pokemon_sprite._entity_type
+        if self.ally == "enemy":
+            self._set_alpha(100)
         self.tier = attack_tier
         self.name = attack_info["Name"].lower()
         self.damage = attack_info["Damage"]
@@ -248,7 +250,7 @@ class PokemonSprite(arcade.Sprite):
     all_enemies = arcade.SpriteList()
     all_entities = arcade.SpriteList()
     stronger_enemies = []
-    def __init__(self, entity_type: str, pokemon: object, location: tuple, speed:int, direction:str="down", detection_range:int=50, pathing=None):
+    def __init__(self, entity_type: str, pokemon: object, location: tuple, speed:int, direction:str="down", detection_range:int=50, pathing="stationary"):
         super().__init__()
         self.pokemon = pokemon
         self._detection_range = detection_range
@@ -257,16 +259,20 @@ class PokemonSprite(arcade.Sprite):
         self._character_direction = direction
         self._movement = {"up": False, "down": False,
                          "left": False, "right": False}
+        self._moving = True
         self._speed = speed
         self.stunned = False
         self.stun_duration = 80
         self.ability1 = self.pokemon._moveset2["Normal"]
-        self.ability1["Active"] = False
         if self._entity_type == "player":
+            self.score = 0
+            self.ability1["Active"] = False
+            self._moving = True
             self.ability2 = self.pokemon._moveset2["Special"]
             self.ability2["Active"] = False
             PokemonSprite.player = self
         elif self._entity_type == "enemy":
+            self.ability1["Active"] = True
             self.pathing = pathing
             PokemonSprite.all_enemies.append(self)
         PokemonSprite.all_entities.append(self)
@@ -367,13 +373,25 @@ class PokemonSprite(arcade.Sprite):
                 AttackSprite(self, self.ability2, "special", PokemonSprite.boundary())
                 self.ability2["Cooldown"][0] = 0
     
+    @classmethod
+    def follow(cls):
+        if len(cls.all_enemies) > 0:
+            for sprite in cls.all_enemies:
+                if sprite.pathing == "follow":
+                    return True
+            cls.all_enemies[0].pathing = "follow"
+            cls.all_enemies[0].ability1["Active"] = False
+            return True
+        return None
+
     def damaged(self):
         stronger = False
         if self in PokemonSprite.all_enemies:
             stronger = True
         for attack in self.collides_with_list(AttackSprite.all_attacks):
             if attack.ally != self._entity_type:
-                self.pokemon._current_hp -= attack.damage
+                if self._moving:
+                    self.pokemon._current_hp -= attack.damage
                 if attack.tier == "special":
                     self.stunned = True
                     self.stun_duration = 80
@@ -383,6 +401,11 @@ class PokemonSprite(arcade.Sprite):
 
     def update(self):
         if self.pokemon.get_current_hp() <= 0:
+            if self._entity_type == "enemy":
+                PokemonSprite.player.pokemon._current_hp += 100
+                if PokemonSprite.player.pokemon._current_hp > PokemonSprite.player.pokemon._max_hp:
+                    PokemonSprite.player.pokemon._current_hp = PokemonSprite.player.pokemon._max_hp
+                PokemonSprite.player.score += 10 * self.pokemon._lvl
             self.remove_from_sprite_lists()
         
         if len(self.collides_with_list(AttackSprite.all_attacks)) > 0:
@@ -396,7 +419,6 @@ class PokemonSprite(arcade.Sprite):
                 self.attack1()
             if self.ability1["Cooldown"][0] < self.ability1["Cooldown"][1]:
                 self.ability1["Cooldown"][0] += 1
-
             if self._entity_type == "player":
                 if self.ability2["Active"]:
                     self.attack2()
@@ -427,16 +449,14 @@ class PokemonSprite(arcade.Sprite):
 
             if self._movement["up"] and self.top < self.boundary_top:
                 if len(collision_list) > 0:
-                    if self._entity_type == "player" or self.collides_with_sprite(PokemonSprite.player):
-                        self.change_y = -self._speed
-                        self._movement["up"] = False
+                    self.change_y = -self._speed
+                    self._movement["up"] = False
                 else:
                     self.change_y = self._speed
             elif self._movement["down"] and self.bottom > self.boundary_bottom:
                 if len(collision_list) > 0:
-                    if self._entity_type == "player" or self.collides_with_sprite(PokemonSprite.player):
-                        self.change_y = self._speed
-                        self._movement["down"] = False
+                    self.change_y = self._speed
+                    self._movement["down"] = False
                 else:
                     self.change_y = -self._speed
             else:
@@ -444,15 +464,14 @@ class PokemonSprite(arcade.Sprite):
 
             if self._movement["left"] and self.left > self.boundary_left:
                 if len(collision_list) > 0:
-                    if self._entity_type == "player" or self.collides_with_sprite(PokemonSprite.player):
-                        self.change_x = self._speed
-                        self._movement["left"] = False
+                    self.change_x = self._speed
+                    self._movement["left"] = False
                 else:
                     self.change_x = -self._speed
             elif self._movement["right"] and self.right < self.boundary_right:
                 if len(collision_list) > 0:
-                    if self._entity_type == "player" or self.collides_with_sprite(PokemonSprite.player):
-                        self.change_x = -self._speed
+                    self.change_x = -self._speed
+                    self._movement["right"] = False
                 else:
                     self.change_x = self._speed
             else:

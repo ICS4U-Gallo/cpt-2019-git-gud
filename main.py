@@ -7,6 +7,8 @@ from load_file import LoadFile
 from chapter_1 import Chapter1View
 from chapter_2 import Chapter2View
 from chapter_3 import Chapter3View
+from part1 import Part1
+from part2 import Part2
 
 
 class Director(arcade.Window):
@@ -18,8 +20,10 @@ class Director(arcade.Window):
             LoadFile,
             Chapter1View,
             Chapter2View,
-            Chapter3View
-            ]
+            Chapter3View,
+            Part1,
+            Part2
+        ]
         self.next_view()
 
     def next_view(self):
@@ -27,7 +31,7 @@ class Director(arcade.Window):
         next_view.director = self
         self.show_view(next_view)
         self.view_index = (self.view_index + 1) % len(self.views)
-    
+
     def specific_view(self, view):
         specific_view = view()
         specific_view.director = self
