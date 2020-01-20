@@ -121,7 +121,7 @@ class Pokemon:
     def add_attack(self, attack: str, power: int,
                    type: str, audio=None):
         if len(Attack.attacks) <= 4:
-            super().__init__(attack, power, type, audio)
+            super().__init__()
         else:
             raise ValueError("Maximum attacks reached. Max: 4")
 
@@ -342,6 +342,17 @@ class PokemonSprite(arcade.Sprite):
             return [enemies[0]] + cls.detect_stronger_enemies(enemies[1:])
         return cls.detect_stronger_enemies(enemies[1:])
 
+    def execute(self, rangeA: int, rangeB: int):
+        list_of_lvls = []
+        for enemy in PokemonSprite.all_enemies:
+            if enemy.pokemon._lvl not in list_of_lvls and enemy.pokemon._lvl < PokemonSprite.player.pokemon._lvl:
+                list_of_lvls.append(enemy.pokemon._lvl)
+        lvl_list = bubble_sort(list_of_lvls)
+
+        if binary_search(self.pokemon._lvl, lvl_list) <= len(lvl_list)-1:
+            if r.randint(rangeA, rangeB) == 1:
+                self.pokemon._current_hp -= self.pokemon._current_hp
+
     def attack1(self):
         if self.ability1["Active"] and self.ability1["Cooldown"][0] == self.ability1["Cooldown"][1]:
             AttackSprite(self, self.ability1, "normal", PokemonSprite.boundary())
@@ -364,6 +375,7 @@ class PokemonSprite(arcade.Sprite):
                     self.stunned = True
                     self.stun_duration = 80
                 else:
+                    self.execute(1, 20)
                     attack.collided = True
 
     def update(self):

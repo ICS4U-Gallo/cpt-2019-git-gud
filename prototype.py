@@ -9,10 +9,11 @@ class MINIGAME(arcade.View):
     def on_show(self):
         arcade.set_background_color(arcade.color.ASH_GREY)
         if not settings.shown:
-            self.enemy = utils.Pokemon("Rattata", 200, "normal", "", "", "", 12,
-                                         moveset2={"Normal": {"Name": "Electro Ball", "Damage": 0.6, "Cooldown": [40, 40],
-                                                              "Sprite Type": ["Projectile"], "Speed": 8, "Scale": 0.4}})
-            self.player = utils.PokemonSprite("enemy", self.enemy, (200, 100), 2)
+            for i in range(10, 40, 10):
+                self.enemy = utils.Pokemon("Rattata", 200, "normal", "", "", "", 4 + i - 8,
+                                            moveset2={"Normal": {"Name": "Electro Ball", "Damage": 0.6, "Cooldown": [40, 40],
+                                                                "Sprite Type": ["Projectile"], "Speed": 8, "Scale": 0.4}})
+                self.enemy = utils.PokemonSprite("enemy", self.enemy, (i * 10, 300), 2)
             self.pokemon = utils.Pokemon("Pikachu", 100, "electric", "", "", "", 10,
                                          moveset2={"Normal": {"Name": "Electro Ball", "Damage": 5, "Cooldown": [40, 40],
                                                               "Sprite Type": ["Projectile"], "Speed": 8, "Scale": 0.4},
