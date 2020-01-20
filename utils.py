@@ -390,14 +390,20 @@ class PokemonSprite(arcade.Sprite):
             stronger = True
         for attack in self.collides_with_list(AttackSprite.all_attacks):
             if attack.ally != self._entity_type:
-                if self._moving:
+                if self._entity_type == "player":
                     self.pokemon._current_hp -= attack.damage
-                if attack.tier == "special":
-                    self.stunned = True
-                    self.stun_duration = 80
-                else:
-                    self.execute(1, 20)
-                    attack.collided = True
+                if self._entity_type == "enemy":
+                    if self.pathing == "follow":
+                        self.pokemon._current_hp -= attack.damage
+                    if attack.tier == "special":
+                        self.stunned = True
+                        self.stun_duration = 80
+                    else:
+                        if self.pathing == "follow":
+                            self.execute(1, 50)
+                attack.collided = True
+                    
+                
 
     def update(self):
         if self.pokemon.get_current_hp() <= 0:

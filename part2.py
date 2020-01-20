@@ -27,15 +27,17 @@ class Part2(arcade.View):
 
             if utils.PokemonSprite.player is None:
                 self.pokemon = utils.Pokemon("Pikachu", 600, "electric", "", "", "", 10,
-                                            moveset2={"Normal": {"Name": "Electro Ball", "Damage": 5, "Cooldown": [40, 40],
-                                                                "Sprite Type": ["Projectile"], "Speed": 8, "Scale": 0.4},
-                                                    "Special": {"Name": "ThunderBolt", "Damage": 1, "Cooldown": [240, 240],
-                                                                "Sprite Type": ["Stationary", "Mirrored"], "Speed": 4, "Scale": 1}})
-                self.player = utils.PokemonSprite("player", self.pokemon, (100, 100), 2)
+                                             moveset2={"Normal": {"Name": "Electro Ball", "Damage": 5, "Cooldown": [30, 30],
+                                                                  "Sprite Type": ["Projectile"], "Speed": 8, "Scale": 0.4},
+                                                       "Special": {"Name": "ThunderBolt", "Damage": 1, "Cooldown": [240, 240],
+                                                                   "Sprite Type": ["Stationary", "Mirrored"], "Speed": 4, "Scale": 1}})
+                utils.PokemonSprite("player", self.pokemon, (100, 100), 2)
             utils.PokemonSprite.stronger_enemies = utils.PokemonSprite.detect_stronger_enemies()
-            self.display_rect = arcade.Sprite(center_x=settings.WIDTH//2, center_y=settings.HEIGHT//2)
-            self.display_rect.texture = arcade.make_soft_square_texture(360, arcade.color.BLACK, center_alpha=150, outer_alpha=150)
-            
+            self.display_rect = arcade.Sprite(
+                center_x=settings.WIDTH//2, center_y=settings.HEIGHT//2)
+            self.display_rect.texture = arcade.make_soft_square_texture(
+                360, arcade.color.BLACK, center_alpha=150, outer_alpha=150)
+
             settings.shown = True
 
     def on_draw(self):
@@ -51,33 +53,33 @@ class Part2(arcade.View):
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.UP:
-            self.player.set_movement("up", True)
+            utils.PokemonSprite.player.set_movement("up", True)
         elif key == arcade.key.DOWN:
-            self.player.set_movement("down", True)
+            utils.PokemonSprite.player.set_movement("down", True)
         if key == arcade.key.LEFT:
-            self.player.set_movement("left", True)
+            utils.PokemonSprite.player.set_movement("left", True)
         elif key == arcade.key.RIGHT:
-            self.player.set_movement("right", True)
-        
+            utils.PokemonSprite.player.set_movement("right", True)
+
         if key == arcade.key.A:
-            self.player.ability1["Active"] = True
+            utils.PokemonSprite.player.ability1["Active"] = True
         if key == arcade.key.S:
-            self.player.ability2["Active"] = True
+            utils.PokemonSprite.player.ability2["Active"] = True
 
     def on_key_release(self, key, _modifiers):
         if key == arcade.key.UP:
-            self.player.set_movement("up", False)
+            utils.PokemonSprite.player.set_movement("up", False)
         elif key == arcade.key.DOWN:
-            self.player.set_movement("down", False)
+            utils.PokemonSprite.player.set_movement("down", False)
         if key == arcade.key.LEFT:
-            self.player.set_movement("left", False)
+            utils.PokemonSprite.player.set_movement("left", False)
         elif key == arcade.key.RIGHT:
-            self.player.set_movement("right", False)
-        
+            utils.PokemonSprite.player.set_movement("right", False)
+
         if key == arcade.key.A:
-            self.player.ability1["Active"] = False
+            utils.PokemonSprite.player.ability1["Active"] = False
         if key == arcade.key.S:
-            self.player.ability2["Active"] = False
+            utils.PokemonSprite.player.ability2["Active"] = False
 
     def on_update(self, delta_time):
         utils.PokemonSprite.player.update()
