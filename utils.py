@@ -73,7 +73,7 @@ class Pokemon(Attack):
         self._hp = health_points
         self._type = Type.lower()
         self._passive = passive_ability
-        self._debuff = None
+        self._debuff = None-
         self._moveset = moveset
         self._image = image
         self._lvl = level
@@ -139,7 +139,7 @@ class Pokemon(Attack):
         return self._exp
 
     def set_exp(self, points: int):
-        self.set_exp = points
+        self._exp = points
 
     def get_item(self):
         return self._item

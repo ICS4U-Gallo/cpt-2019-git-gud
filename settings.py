@@ -24,6 +24,7 @@ ITEMS = {"Pokeballs":  0,
          "Elemental pill": 0,
          "Berries": 0}
 MONEY = 0
+POKEMONS = [utils.Pokemon("Squirtle", 100, "water", "rain dance", [])]
 
 strengths = {"bug": ["grass", "dark", "psychic"], "dark": ["ghost", "psychic"],
              "dragon": ["dragon"], "electric": ["flying", "water"], "fairy": ["fighting", "dark", "dragon"],

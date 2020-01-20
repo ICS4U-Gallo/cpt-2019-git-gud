@@ -33,6 +33,7 @@ class Chapter3View(arcade.View):
         self.game_win = False
         self.game_lose = False
         self.pause = False
+        self.turn = "player"
 
     def on_draw(self):
         arcade.start_render()
@@ -446,8 +447,7 @@ class Chapter3View(arcade.View):
             self.director.next_view() # Reset
 
     def on_update(self, delta_time):
-        if self.btn_fight_atk_1:
-            utils.Battle.attack(utils.Player.get_pokemons, utils.Player.pokemon.get_attack, utils.Trainer.pokemon)
+        if self.btn_fight_atk_1 and self.turn.lower() == "player":
             
 
 if __name__ == "__main__":
