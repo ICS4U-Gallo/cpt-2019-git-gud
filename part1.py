@@ -31,7 +31,8 @@ class Part1(arcade.View):
                                                                   "Sprite Type": ["Projectile"], "Speed": 8, "Scale": 0.4},
                                                        "Special": {"Name": "ThunderBolt", "Damage": 1, "Cooldown": [240, 240],
                                                                    "Sprite Type": ["Stationary", "Mirrored"], "Speed": 4, "Scale": 1}})
-                utils.PokemonSprite("player", self.pokemon, (100, 100), 2)
+                utils.PokemonSprite("player", self.pokemon,
+                                    (settings.WIDTH//2, settings.HEIGHT//2), 2)
             utils.PokemonSprite.stronger_enemies = utils.PokemonSprite.detect_stronger_enemies()
             self.display_rect = arcade.Sprite(
                 center_x=settings.WIDTH//2, center_y=settings.HEIGHT//2)

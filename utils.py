@@ -68,7 +68,7 @@ class Attack:
 
 class Pokemon:
     def __init__(self, name: str, health_points: int, Type: str, passive_ability: str, image: str, sound: str, level: int,
-                 moveset:List[str]=None, moveset2:Dict[str,dict]=None, experience_points: int = 0, item: str = None):
+                 moveset: List[str] = None, moveset2: Dict[str, dict] = None, experience_points: int = 0, item: str = None):
         self._name = name
         self._max_hp = health_points
         self._current_hp = health_points
@@ -158,7 +158,8 @@ class Pokemon:
 
 class AttackSprite(arcade.Sprite):
     all_attacks = arcade.SpriteList()
-    def __init__(self, pokemon_sprite: object, attack_info: Dict, attack_tier: str, boundary:Dict[str,int]):
+
+    def __init__(self, pokemon_sprite: object, attack_info: Dict, attack_tier: str, boundary: Dict[str, int]):
         super().__init__()
         self.direction = pokemon_sprite._character_direction
         self.ally = pokemon_sprite._entity_type
@@ -175,37 +176,46 @@ class AttackSprite(arcade.Sprite):
         if len(attack_info["Sprite Type"]) > 1:
             self.reflection = attack_info["Sprite Type"][1]
             self.animate = False
-        self.texture = arcade.load_texture(f"images/attacks/{self.name}.png", scale=self.scale)
+        self.texture = arcade.load_texture(
+            f"images/attacks/{self.name}.png", scale=self.scale)
         if self.sprite_type == "Projectile":
             if self.direction == "up":
-                self.set_position(pokemon_sprite.center_x, pokemon_sprite.top-10)
+                self.set_position(pokemon_sprite.center_x,
+                                  pokemon_sprite.top-10)
             elif self.direction == "down":
-                self.set_position(pokemon_sprite.center_x, pokemon_sprite.bottom+10)
+                self.set_position(pokemon_sprite.center_x,
+                                  pokemon_sprite.bottom+10)
             elif self.direction == "left":
-                self.set_position(pokemon_sprite.left+10, pokemon_sprite.center_y-10)
+                self.set_position(pokemon_sprite.left+10,
+                                  pokemon_sprite.center_y-10)
             elif self.direction == "right":
-                self.set_position(pokemon_sprite.right-10, pokemon_sprite.center_y-10)
+                self.set_position(pokemon_sprite.right-10,
+                                  pokemon_sprite.center_y-10)
             self.boundary_top = boundary["top"]
             self.boundary_bottom = boundary["bottom"]
             self.boundary_left = boundary["left"]
             self.boundary_right = boundary["right"]
         elif self.sprite_type == "Stationary":
             if self.direction == "up":
-                self.set_position(pokemon_sprite.center_x, pokemon_sprite.top+self.height//2)
+                self.set_position(pokemon_sprite.center_x,
+                                  pokemon_sprite.top+self.height//2)
             elif self.direction == "down":
-                self.set_position(pokemon_sprite.center_x, pokemon_sprite.bottom+self.height//2)
+                self.set_position(pokemon_sprite.center_x,
+                                  pokemon_sprite.bottom+self.height//2)
             elif self.direction == "left":
-                self.set_position(pokemon_sprite.left-self.width//2, pokemon_sprite.bottom+self.height//2)
+                self.set_position(pokemon_sprite.left-self.width //
+                                  2, pokemon_sprite.bottom+self.height//2)
             elif self.direction == "right":
-                self.set_position(pokemon_sprite.right+self.width//2, pokemon_sprite.bottom+self.height//2)
+                self.set_position(pokemon_sprite.right+self.width //
+                                  2, pokemon_sprite.bottom+self.height//2)
             self.timer = 100
         AttackSprite.all_attacks.append(self)
-    
+
     @classmethod
     def remove_all(cls):
         for sprite in cls.all_attacks:
             sprite.remove_from_sprite_lists()
-            
+
     def update(self):
         if self.sprite_type == "Projectile":
             if self.collided:
@@ -230,8 +240,8 @@ class AttackSprite(arcade.Sprite):
             if self.timer == 0:
                 self.remove_from_sprite_lists()
             self.timer -= 1
-    
-    def update_animation(self, delta_time=1 /60):
+
+    def update_animation(self, delta_time=1 / 60):
         if hasattr(self, "animate"):
             if self.timer % 10 == 0:
                 if self.animate:
@@ -239,10 +249,11 @@ class AttackSprite(arcade.Sprite):
                 else:
                     self.animate = True
             if self.reflection == "Mirrored":
-                self.texture = arcade.load_texture(f"images/attacks/{self.name}.png", scale=self.scale, mirrored=self.animate)
+                self.texture = arcade.load_texture(
+                    f"images/attacks/{self.name}.png", scale=self.scale, mirrored=self.animate)
             elif self.reflection == "Flipped":
-                self.texture = arcade.load_texture(f"images/attacks/{self.name}.png", scale=self.scale, flipped=self.animate)
-
+                self.texture = arcade.load_texture(
+                    f"images/attacks/{self.name}.png", scale=self.scale, flipped=self.animate)
 
 
 class PokemonSprite(arcade.Sprite):
@@ -250,7 +261,8 @@ class PokemonSprite(arcade.Sprite):
     all_enemies = arcade.SpriteList()
     all_entities = arcade.SpriteList()
     stronger_enemies = []
-    def __init__(self, entity_type: str, pokemon: object, location: tuple, speed:int, direction:str="down", detection_range:int=50, pathing="stationary"):
+
+    def __init__(self, entity_type: str, pokemon: object, location: tuple, speed: int, direction: str = "down", detection_range: int = 50, pathing="stationary"):
         super().__init__()
         self.pokemon = pokemon
         self._detection_range = detection_range
@@ -258,10 +270,11 @@ class PokemonSprite(arcade.Sprite):
         self.set_position(location[0], location[1])
         self._character_direction = direction
         self._movement = {"up": False, "down": False,
-                         "left": False, "right": False}
+                          "left": False, "right": False}
         self._moving = True
         self._speed = speed
         self.stunned = False
+        self.stun_timer = 0
         self.stun_duration = 80
         self.ability1 = self.pokemon._moveset2["Normal"]
         if self._entity_type == "player":
@@ -307,21 +320,21 @@ class PokemonSprite(arcade.Sprite):
 
     def get_speed(self):
         return self._speed
-    
+
     def set_speed(self, value: int):
         self._speed = value
-    
+
     def get_movement(self):
         return self._movement
-    
+
     def set_movement(self, direction: str, moving: bool):
         self._movement[direction] = moving
-    
+
     def get_character_direction(self):
         return self._character_direction
 
     @staticmethod
-    def boundary(top:int="default", bottom:int=0, left:int=0, right:int="default"):
+    def boundary(top: int = "default", bottom: int = 0, left: int = 0, right: int = "default"):
         if top == "default":
             top = settings.HEIGHT
         if right == "default":
@@ -342,19 +355,20 @@ class PokemonSprite(arcade.Sprite):
         cls.stronger_enemies = []
 
     @classmethod
-    def detect_stronger_enemies(cls, enemies:List[object]=None):
+    def detect_stronger_enemies(cls, enemies: List[object] = None):
         if enemies is None:
             enemies = cls.all_enemies
         if len(enemies) == 0:
             return []
         elif enemies[0].pokemon.get_lvl() >= PokemonSprite.player.pokemon.get_lvl() + 2:
+            enemies[0].stun_duration = 120
             return [enemies[0]] + cls.detect_stronger_enemies(enemies[1:])
         return cls.detect_stronger_enemies(enemies[1:])
 
     def execute(self, rangeA: int, rangeB: int):
         list_of_lvls = []
         for enemy in PokemonSprite.all_enemies:
-            if enemy.pokemon._lvl not in list_of_lvls and enemy.pokemon._lvl < PokemonSprite.player.pokemon._lvl:
+            if enemy.pokemon._lvl not in list_of_lvls and enemy not in PokemonSprite.stronger_enemies and enemy.pokemon._lvl < PokemonSprite.player.pokemon._lvl:
                 list_of_lvls.append(enemy.pokemon._lvl)
         lvl_list = bubble_sort(list_of_lvls)
 
@@ -364,15 +378,17 @@ class PokemonSprite(arcade.Sprite):
 
     def attack1(self):
         if self.ability1["Active"] and self.ability1["Cooldown"][0] == self.ability1["Cooldown"][1]:
-            AttackSprite(self, self.ability1, "normal", PokemonSprite.boundary())
+            AttackSprite(self, self.ability1, "normal",
+                         PokemonSprite.boundary())
             self.ability1["Cooldown"][0] = 0
-            
+
     def attack2(self):
         if hasattr(self, "ability2"):
             if self.ability2["Active"] and self.ability2["Cooldown"][0] == self.ability2["Cooldown"][1]:
-                AttackSprite(self, self.ability2, "special", PokemonSprite.boundary())
+                AttackSprite(self, self.ability2, "special",
+                             PokemonSprite.boundary())
                 self.ability2["Cooldown"][0] = 0
-    
+
     @classmethod
     def follow(cls):
         if len(cls.all_enemies) > 0:
@@ -397,13 +413,11 @@ class PokemonSprite(arcade.Sprite):
                         self.pokemon._current_hp -= attack.damage
                     if attack.tier == "special":
                         self.stunned = True
-                        self.stun_duration = 80
+                        self.stun_timer = 0
                     else:
                         if self.pathing == "follow":
-                            self.execute(1, 50)
+                            self.execute(1, 20)
                 attack.collided = True
-                    
-                
 
     def update(self):
         if self.pokemon.get_current_hp() <= 0:
@@ -413,14 +427,14 @@ class PokemonSprite(arcade.Sprite):
                     PokemonSprite.player.pokemon._current_hp = PokemonSprite.player.pokemon._max_hp
                 PokemonSprite.player.score += 10 * self.pokemon._lvl
             self.remove_from_sprite_lists()
-        
+
         if len(self.collides_with_list(AttackSprite.all_attacks)) > 0:
             self.damaged()
-        
+
         if not self.stunned:
             if self._alpha != 255:
                 self._set_alpha(255)
-                
+
             if self.ability1["Active"]:
                 self.attack1()
             if self.ability1["Cooldown"][0] < self.ability1["Cooldown"][1]:
@@ -430,10 +444,12 @@ class PokemonSprite(arcade.Sprite):
                     self.attack2()
                 if self.ability2["Cooldown"][0] < self.ability2["Cooldown"][1]:
                     self.ability2["Cooldown"][0] += 1
-                collision_list = self.collides_with_list(PokemonSprite.all_enemies)
+                collision_list = self.collides_with_list(
+                    PokemonSprite.all_enemies)
 
             if self._entity_type == "enemy":
-                collision_list = self.collides_with_list(PokemonSprite.all_entities)
+                collision_list = self.collides_with_list(
+                    PokemonSprite.all_entities)
                 if self.pathing == "follow":
                     if self.center_y - PokemonSprite.player.center_y > 0:
                         if self.bottom - PokemonSprite.player.top > 0:
@@ -484,14 +500,14 @@ class PokemonSprite(arcade.Sprite):
                 self.change_x = 0
 
             self._set_collision_radius(16)
-            self.position = [self._position[0] + self.change_x, self._position[1] + self.change_y]
+            self.position = [self._position[0] +
+                             self.change_x, self._position[1] + self.change_y]
         else:
-            if self.stun_duration == 0:
-                self.stun_duration = 100
+            if self.stun_timer == self.stun_duration:
+                self.stun_timer = 0
                 self.stunned = False
-            self.stun_duration -= 1
+            self.stun_timer += 1
             self._set_alpha(180)
-
 
     def update_animation(self, delta_time: float = 1/60):
         if self.change_x == 0 and self.change_y == 0:
@@ -589,6 +605,8 @@ class Player(Trainer):
 
 
 # class PC():
+
+
     def __init__(self):
         self._stored = {}
         self._pages = []
@@ -730,6 +748,5 @@ def binary_search(target: int, numbers: List) -> int:
         else:
             end = mid - 1
     return -1
-
 
     return new_array
