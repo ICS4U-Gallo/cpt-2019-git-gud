@@ -16,7 +16,7 @@ class Chapter3View(arcade.View):
         self.btn_fight_atk_2 = False
         self.btn_fight_atk_3 = False
         self.btn_fight_atk_4 = False
-        self.btn_pokemon_1 = False
+        self.btn_pokemon_1 = True
         self.btn_pokemon_2 = False
         self.btn_pokemon_3 = False
         self.btn_pokemon_4 = False
@@ -35,7 +35,11 @@ class Chapter3View(arcade.View):
         self.game_lose = False
         self.pause = False
         self.turn = "player"
-
+        self.battle = settings.THE_BATTLE
+        self.player = settings.PLAYER
+        self.enemy = settings.ENEMY
+        self.chosen_poke = 0
+        
     def on_draw(self):
         arcade.start_render()
         arcade.draw_texture_rectangle(settings.WIDTH // 2, settings.HEIGHT // 2 + 150,
@@ -80,7 +84,7 @@ class Chapter3View(arcade.View):
         if self.btn_fight:
             arcade.draw_rectangle_filled(settings.WIDTH // 2 - 140, settings.HEIGHT // 3 + 30,
                                         settings.WIDTH // 3, settings.HEIGHT // 10, arcade.color.DUTCH_WHITE)
-            arcade.draw_text("A t t a c k  1", settings.WIDTH // 2 - 140, settings.HEIGHT // 3 + 30,
+            arcade.draw_text(self.player._pokemons[self.chosen_poke].get_attack_name(0), settings.WIDTH // 2 - 140, settings.HEIGHT // 3 + 30,
                             arcade.color.GRAY, 30, 0, "center", 'Comic Sans', True, True, "center", "center", 0)
             
             if self.selected == 4:
@@ -92,7 +96,7 @@ class Chapter3View(arcade.View):
             
             arcade.draw_rectangle_filled(settings.WIDTH // 2 + 140, settings.HEIGHT // 3 + 30,
                                         settings.WIDTH // 3, settings.HEIGHT // 10, arcade.color.DUTCH_WHITE)
-            arcade.draw_text("A t t a c k  2", settings.WIDTH // 2 + 140, settings.HEIGHT // 3 + 30,
+            arcade.draw_text(self.player._pokemons[self.chosen_poke].get_attack_name(1), settings.WIDTH // 2 + 140, settings.HEIGHT // 3 + 30,
                              arcade.color.GRAY, 30, 0, "center", 'Comic Sans', True, True, "center", "center", 0)
 
             if self.selected == 5:
@@ -104,7 +108,7 @@ class Chapter3View(arcade.View):
         
             arcade.draw_rectangle_filled(settings.WIDTH // 2 - 140, settings.HEIGHT // 3 - 50,
                                         settings.WIDTH // 3, settings.HEIGHT // 10, arcade.color.DUTCH_WHITE)
-            arcade.draw_text("A t t a c k  3", settings.WIDTH // 2 - 140, settings.HEIGHT // 3 - 50,
+            arcade.draw_text(self.player._pokemons[self.chosen_poke].get_attack_name(2), settings.WIDTH // 2 - 140, settings.HEIGHT // 3 - 50,
                              arcade.color.GRAY, 30, 0, "center", 'Comic Sans', True, True, "center", "center", 0)
 
             if self.selected == 6:
@@ -116,7 +120,7 @@ class Chapter3View(arcade.View):
             
             arcade.draw_rectangle_filled(settings.WIDTH // 2 + 140, settings.HEIGHT // 3 - 50,
                                         settings.WIDTH // 3, settings.HEIGHT // 10, arcade.color.DUTCH_WHITE)
-            arcade.draw_text("A t t a c k  4", settings.WIDTH // 2 + 140, settings.HEIGHT // 3 - 50,
+            arcade.draw_text(self.player._pokemons[self.chosen_poke].get_attack_name(3), settings.WIDTH // 2 + 140, settings.HEIGHT // 3 - 50,
                              arcade.color.GRAY, 30, 0, "center", 'Comic Sans', True, True, "center", "center", 0)
 
             if self.selected == 7:
@@ -448,7 +452,31 @@ class Chapter3View(arcade.View):
             self.director.next_view() # Reset
 
     def on_update(self, delta_time):
-        if self.btn_fight_atk_1 and self.turn.lower() == "player":
+        if self.btn_fight:
+            if self.btn_fight_atk_1:
+                self.player._pokemons[self.chosen_poke].attacks[0]
+            elif self.btn_fight_atk_2:
+                self.player._pokemons[self.chosen_poke].attacks[1]
+            elif self.btn_fight_atk_3:
+                self.player._pokemons[self.chosen_poke].attacks[2]
+            elif self.btn_fight_atk_4:
+                self.player._pokemons[self.chosen_poke].attacks[3]
+        
+        if self.btn_pokemon:
+            if self.btn_pokemon_1:
+                self.chosen_poke = 0
+            elif self.btn_pokemon_2:
+                self.chosen_poke = 1
+            elif self.btn_pokemon_3:
+                self.chosen_poke = 2
+            elif self.btn_pokemon_4:
+                self.chosen_poke = 3
+            elif self.btn_pokemon_5:
+                self.chosen_poke = 4
+            elif self.btn_pokemon_6:
+                self.chosen_poke = 5
+        
+        if self.btn_bag:
             pass
 
 if __name__ == "__main__":
