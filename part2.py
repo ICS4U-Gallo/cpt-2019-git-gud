@@ -106,6 +106,6 @@ if __name__ == "__main__":
     from utils import FakeDirector
     window = arcade.Window(settings.WIDTH, settings.HEIGHT)
     my_view = Part2()
-    my_view.director = FakeDirector(close_on_next_view=True)
+    my_view.director = FakeDirector(close_on_next_view=False)
     window.show_view(my_view)
     arcade.run()
