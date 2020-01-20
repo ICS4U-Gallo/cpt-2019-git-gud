@@ -30,45 +30,48 @@ class FakeDirector:
             exit()
 
 
-class Attack:
+class Attack():
     attacks = []
 
-    def __init__(self, name: str, attack_power: int,
+    def __init__(self, attack_name: str, attack_power: int,
                  attack_type: str, attack_audio: str = None):
-        self._name = attack.lower()
+        self._attack_name = attack_name.lower()
         self._attack_power = attack_power
         self._attack_type = attack_type.lower()
         self._attack_audio = attack_audio
         Attack.attacks.append(self)
 
-    def set_attack_name(self, attack: str):
-        self._attack = attack.lower()
+    def set_attack_name(self, attack: str, which: int):
+        self.attacks[which]._attack_name = attack.lower()
 
-    def get_attack_name(self):
-        return self._attack
+    def get_attack_name(self, which: int):
+        return self.attacks[which]._attack_name
 
-    def set_attack_power(self, attack_power: int):
-        self._attack_power = attack_power
+    def set_attack_power(self, attack_power: int, which: int):
+        self.attacks[which]._attack_power = attack_power
 
-    def get_attack_power(self):
-        return self._attack_power
+    def get_attack_power(self, which: int):
+        return self.attacks[which]._attack_power
 
-    def set_attack_type(self, type: str):
-        self._attack_type = type.lower()
+    def set_attack_type(self, type: str, which: int):
+        self.attacks[which]._attack_type = type.lower()
 
-    def get_attack_type(self):
-        return self._attack_type
+    def get_attack_type(self, which: int):
+        return self.attacks[which]._attack_type
 
-    def set_attack_audio(self, audio: str):
-        self._attack_audio = audio
+    def set_attack_audio(self, audio: str, which: int):
+        self.attacks[which]._attack_audio = audio
 
-    def get_attack_audio(self):
-        return self._attack_audio
+    def get_attack_audio(self, which: int):
+        return self.attacks[which]._attack_audio
 
 
-class Pokemon:
+class Pokemon(Attack):
     def __init__(self, name: str, health_points: int, Type: str, passive_ability: str, image: str, sound: str, level: int,
-                 moveset:str=None, moveset2:Dict[str,dict]=None, experience_points: int = 0, item: str = None):
+                 attack:str=None, attack_power:int=None, attack_type:str=None, attack_audio:str=None,
+                 moveset2:Dict[str,dict]=None, experience_points: int = 0, item: str = None):
+        if attack != None and attack_power != None and attack_type != None:
+            super().__init__(attack, attack_power, attack_type, attack_audio)
         self._name = name
         self._max_hp = health_points
         self._current_hp = health_points
@@ -77,7 +80,6 @@ class Pokemon:
         self._debuff = None
         self._image = image
         self._lvl = level
-        self._moveset = moveset
         self._moveset2 = moveset2
         self._exp = experience_points
         self._item = item
@@ -115,7 +117,7 @@ class Pokemon:
     def get_debuff(self):
         return self._debuff
 
-    def get_moveset(self, attack: int):
+    def get_attack(self, attack: int):
         return Attack.attacks[attack]
 
     def add_attack(self, name: str, power: int,
@@ -455,7 +457,7 @@ class PokemonSprite(arcade.Sprite):
                 self._animation_timer = 0
 
 
-class Trainer:
+class Trainer():
     def __init__(self, name: str, pokemons: List[Pokemon],
                  items: Dict[str, int] = None, money: int = None):
         self._name = name.lower()
@@ -557,12 +559,12 @@ class Battle():  # IN PROGRESS
                 return 1
 
         if hps[0] == 0:
-            return 0 + self.check_hps(self, hps[1:])
+            return 0 + self.check_hps(hps[1:])
         elif hps[0] > 0:
-            return 1 + self.check_hps(self, hps[1:])
+            return 1 + self.check_hps(hps[1:])
 
     def check_for_win(self, player_poke_hp: List[int], enemy_poke_hp: List[int]) -> bool:
-        if check_hp(player_poke_hp) + check_hp(enemy_poke_hp) == 0:
+        if self.check_hps(player_poke_hp) + self.check_hps(enemy_poke_hp) == 0:
             return True
         else:
             return False
