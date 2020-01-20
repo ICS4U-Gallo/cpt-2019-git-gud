@@ -9,18 +9,20 @@ class MINIGAME(arcade.View):
     def on_show(self):
         arcade.set_background_color(arcade.color.ASH_GREY)
         if not settings.shown:
-            for i in range(10, 40, 10):
-                self.enemy = utils.Pokemon("Rattata", 200, "normal", "", "", "", 4 + i - 8,
-                                            moveset2={"Normal": {"Name": "Electro Ball", "Damage": 0.6, "Cooldown": [40, 40],
-                                                                "Sprite Type": ["Projectile"], "Speed": 8, "Scale": 0.4}})
-                self.enemy = utils.PokemonSprite("enemy", self.enemy, (i * 10, 300), 2)
+            self.enemy = utils.Pokemon("Rattata", 200, "normal", "", "", "", 4,
+                                        moveset2={"Normal": {"Name": "Electro Ball", "Damage": 0.6, "Cooldown": [40, 40],
+                                                            "Sprite Type": ["Projectile"], "Speed": 8, "Scale": 0.4}})
+            self.enemy = utils.PokemonSprite("enemy", self.enemy, (300, 300), 2, pathing="follow")
+            self.enemy = utils.Pokemon("Rattata", 200, "normal", "", "", "", 4,
+                                        moveset2={"Normal": {"Name": "Electro Ball", "Damage": 0.6, "Cooldown": [40, 40],
+                                                            "Sprite Type": ["Projectile"], "Speed": 8, "Scale": 0.4}})
+            self.enemy = utils.PokemonSprite("enemy", self.enemy, (500, 300), 2, pathing="follow")
             self.pokemon = utils.Pokemon("Pikachu", 100, "electric", "", "", "", 10,
                                          moveset2={"Normal": {"Name": "Electro Ball", "Damage": 5, "Cooldown": [40, 40],
                                                               "Sprite Type": ["Projectile"], "Speed": 8, "Scale": 0.4},
                                                    "Special": {"Name": "ThunderBolt", "Damage": 1, "Cooldown": [240, 240],
                                                                "Sprite Type": ["Stationary", "Mirrored"], "Speed": 4, "Scale": 1}})
             self.player = utils.PokemonSprite("player", self.pokemon, (100, 100), 2)
-            self.player.set_boundaries()
             utils.PokemonSprite.stronger_enemies = utils.PokemonSprite.detect_stronger_enemies()
             settings.shown = True
 
