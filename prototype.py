@@ -9,18 +9,21 @@ class MINIGAME(arcade.View):
     def on_show(self):
         arcade.set_background_color(arcade.color.ASH_GREY)
         if not settings.shown:
-            self.player_list = arcade.SpriteList()
-            self.enemies = arcade.SpriteList()
-            self.pokemon = utils.Pokemon("Pikachu", 100, "electric", "", [], "", "", 10)
-            self.player = utils.Entity("player", self.pokemon, (100, 100), 2)
-            self.player.set_boundaries(settings.WIDTH, settings.HEIGHT)
-            self.player_list.append(self.player)
+            self.pokemon = utils.Pokemon("Pikachu", 100, "electric", "", "", "", 10,
+                                         moveset2={"Normal": {"Name": "Electro Ball", "Damage": 0.6, "Cooldown": [40, 40],
+                                                              "Sprite Type": ["Projectile"], "Speed": 8, "Scale": 0.4},
+                                                   "Special": {"Name": "Thunder Bolt", "Damage": 1.2, "Cooldown": [120, 120],
+                                                               "Sprite Type": ["Stationary", "Mirrored"], "Speed": 4, "Scale": 1}})
+            self.player = utils.PokemonSprite("player", self.pokemon, (100, 100), 2)
+            self.player.set_boundaries()
+            self.player.stronger_enemies = self.player.detect_stronger_enemies()
             settings.shown = True
 
     def on_draw(self):
         arcade.start_render()
-        self.player_list.draw()
-        self.enemies.draw()
+        utils.PokemonSprite.all_players.draw()
+        utils.PokemonSprite.all_enemies.draw()
+        utils.AttackSprite.all_attacks.draw()
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.UP:
@@ -31,6 +34,11 @@ class MINIGAME(arcade.View):
             self.player.set_movement("left", True)
         elif key == arcade.key.RIGHT:
             self.player.set_movement("right", True)
+        
+        if key == arcade.key.A:
+            self.player.ability1["Active"] = True
+        if key == arcade.key.S:
+            self.player.ability2["Active"] = True
 
         if key == arcade.key.ENTER:
             self.director.next_view()
@@ -44,12 +52,19 @@ class MINIGAME(arcade.View):
             self.player.set_movement("left", False)
         elif key == arcade.key.RIGHT:
             self.player.set_movement("right", False)
+        
+        if key == arcade.key.A:
+            self.player.ability1["Active"] = False
+        if key == arcade.key.S:
+            self.player.ability2["Active"] = False
 
     def on_update(self, delta_time):
-        self.player_list.update()
-        self.player_list.update_animation()
-        self.enemies.update()
-        self.enemies.update_animation()
+        utils.PokemonSprite.all_players.update()
+        utils.PokemonSprite.all_players.update_animation()
+        utils.PokemonSprite.all_enemies.update()
+        utils.PokemonSprite.all_enemies.update_animation()
+        utils.AttackSprite.all_attacks.update()
+        utils.AttackSprite.all_attacks.update_animation()
 
 
 if __name__ == "__main__":
