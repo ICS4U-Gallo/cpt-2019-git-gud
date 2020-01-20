@@ -24,7 +24,11 @@ ITEMS = {"Pokeballs":  0,
          "Elemental pill": 0,
          "Berries": 0}
 MONEY = 0
-POKEMONS = [utils.Pokemon("Squirtle", 100, "water", "rain dance", [])]
+SQUIRTLE = utils.Pokemon("Squirtle", 100, "water", "rain dance", "", "", 10, "")
+SQUIRTLE.add_attack("bubble beam", 40, "water")
+SQUIRTLE.add_attack("hydro pump", 120, "water")
+SQUIRTLE.add_attack("scratch", 70, "normal")
+SQUIRTLE.add_attack("shell tackle", 90, "fighting")
 
 strengths = {"bug": ["grass", "dark", "psychic"], "dark": ["ghost", "psychic"],
              "dragon": ["dragon"], "electric": ["flying", "water"], "fairy": ["fighting", "dark", "dragon"],

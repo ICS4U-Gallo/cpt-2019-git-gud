@@ -33,18 +33,18 @@ class FakeDirector:
 class Attack:
     attacks = []
 
-    def __init__(self, attack: str, attack_power: int,
+    def __init__(self, name: str, attack_power: int,
                  attack_type: str, attack_audio: str = None):
-        self._attack = attack.lower()
+        self._name = attack.lower()
         self._attack_power = attack_power
         self._attack_type = attack_type.lower()
         self._attack_audio = attack_audio
         Attack.attacks.append(self)
 
-    def set_attack(self, attack: str):
+    def set_attack_name(self, attack: str):
         self._attack = attack.lower()
 
-    def get_attack(self):
+    def get_attack_name(self):
         return self._attack
 
     def set_attack_power(self, attack_power: int):
@@ -68,7 +68,7 @@ class Attack:
 
 class Pokemon:
     def __init__(self, name: str, health_points: int, Type: str, passive_ability: str, image: str, sound: str, level: int,
-                 moveset:List[str]=None, moveset2:Dict[str,dict]=None, experience_points: int = 0, item: str = None):
+                 moveset:str=None, moveset2:Dict[str,dict]=None, experience_points: int = 0, item: str = None):
         self._name = name
         self._max_hp = health_points
         self._current_hp = health_points
@@ -118,10 +118,10 @@ class Pokemon:
     def get_moveset(self, attack: int):
         return Attack.attacks[attack]
 
-    def add_attack(self, attack: str, power: int,
+    def add_attack(self, name: str, power: int,
                    type: str, audio=None):
         if len(Attack.attacks) <= 4:
-            super().__init__(attack, power, type, audio)
+            super().__init__(name, power, type, audio)
         else:
             raise ValueError("Maximum attacks reached. Max: 4")
 
@@ -549,7 +549,6 @@ class Battle():  # IN PROGRESS
         self._player_win = False
         self._player_lose = False
     
-
     def check_hps(self, hps: List[int]) -> int:
         if len(hps) == 1:
             if hps[0] == 0:
@@ -558,9 +557,9 @@ class Battle():  # IN PROGRESS
                 return 1
 
         if hps[0] == 0:
-            return 0 + check_hps(self, hps[1:])
+            return 0 + self.check_hps(self, hps[1:])
         elif hps[0] > 0:
-            return 1 + check_hps(self, hps[1:])
+            return 1 + self.check_hps(self, hps[1:])
 
     def check_for_win(self, player_poke_hp: List[int], enemy_poke_hp: List[int]) -> bool:
         if check_hp(player_poke_hp) + check_hp(enemy_poke_hp) == 0:
