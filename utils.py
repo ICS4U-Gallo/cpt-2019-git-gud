@@ -274,7 +274,7 @@ class PokemonSprite(arcade.Sprite):
     all_entities = arcade.SpriteList()
     stronger_enemies = []
 
-    def __init__(self, entity_type: str, pokemon: object, location: tuple, speed: int, direction: str = "down", detection_range: int = 50, pathing:str="stationary"):
+    def __init__(self, entity_type: str, pokemon: object, location: tuple, speed: int, direction: str = "down", detection_range: int = 50, pathing: str = "stationary"):
         super().__init__()
         self.pokemon = pokemon
         self._detection_range = detection_range
@@ -643,6 +643,7 @@ class Player(Trainer):
 
 
 # class PC():
+
 
     def __init__(self):
         self._stored = {}
