@@ -157,6 +157,15 @@ class Pokemon:
 
 
 class AttackSprite(arcade.Sprite):
+    """
+    Attrs:
+        pokemon_sprite = a PokemonSprite object that gives information on the sprite movement direction
+        attack_info = a dictionary of the attack move, relaying information on it's name, damage, speed and sprite info (type, scale)
+        attack_tier = a string of the type of attack that is being used (normal, special)
+            - normal attacks refer to attacks with lower cooldowns and lower damage ranges
+            - special attacks refer to attacks with higher cooldowns, higer damage ranges, and other effects such as stuns and damage over time
+        boundary = a dictionary of the different side boundaries of the sprite, deleting itself when it passes these boundaries
+    """
     all_attacks = arcade.SpriteList()
 
     def __init__(self, pokemon_sprite: object, attack_info: Dict, attack_tier: str, boundary: Dict[str, int]):
@@ -213,6 +222,9 @@ class AttackSprite(arcade.Sprite):
 
     @classmethod
     def remove_all(cls):
+        """
+        Removes sprites from all sprite lists assosiated with them
+        """
         for sprite in cls.all_attacks:
             sprite.remove_from_sprite_lists()
 
@@ -262,7 +274,7 @@ class PokemonSprite(arcade.Sprite):
     all_entities = arcade.SpriteList()
     stronger_enemies = []
 
-    def __init__(self, entity_type: str, pokemon: object, location: tuple, speed: int, direction: str = "down", detection_range: int = 50, pathing="stationary"):
+    def __init__(self, entity_type: str, pokemon: object, location: tuple, speed: int, direction: str = "down", detection_range: int = 50, pathing:str="stationary"):
         super().__init__()
         self.pokemon = pokemon
         self._detection_range = detection_range
@@ -318,23 +330,27 @@ class PokemonSprite(arcade.Sprite):
         self.texture = self.idle_textures[self._character_direction]
         self.set_boundaries()
 
-    def get_speed(self):
+    def get_speed(self) -> int:
         return self._speed
 
-    def set_speed(self, value: int):
+    def set_speed(self, value: int) -> void:
         self._speed = value
 
-    def get_movement(self):
+    def get_movement(self) -> Dict[str, bool]:
         return self._movement
 
-    def set_movement(self, direction: str, moving: bool):
+    def set_movement(self, direction: str, moving: bool) -> void:
         self._movement[direction] = moving
 
-    def get_character_direction(self):
+    def get_character_direction(self) -> str:
+        """Returns the direction the sprite is facing 
+        """
         return self._character_direction
 
     @staticmethod
-    def boundary(top: int = "default", bottom: int = 0, left: int = 0, right: int = "default"):
+    def boundary(top: int = "default", bottom: int = 0, left: int = 0, right: int = "default") -> Dict[str, int]:
+        """Returns a dictionary of boundaries
+        """
         if top == "default":
             top = settings.HEIGHT
         if right == "default":
@@ -342,6 +358,8 @@ class PokemonSprite(arcade.Sprite):
         return {"top": top, "bottom": bottom, "left": left, "right": right}
 
     def set_boundaries(self):
+        """Set sprite boundaries
+        """
         boundary = PokemonSprite.boundary()
         self.boundary_top = boundary["top"]
         self.boundary_bottom = boundary["bottom"]
@@ -350,12 +368,18 @@ class PokemonSprite(arcade.Sprite):
 
     @classmethod
     def remove_all_enemies(cls):
+        """Remove all sprites from sprite lists they are associated with
+        """
         for enemy in cls.all_enemies:
             enemy.remove_from_sprite_lists()
         cls.stronger_enemies = []
 
     @classmethod
     def detect_stronger_enemies(cls, enemies: List[object] = None):
+        """Returns a list of sprites that are levels 2 or more than the player
+        Args:
+            enemies = a list of PokemonSprite enemies
+        """
         if enemies is None:
             enemies = cls.all_enemies
         if len(enemies) == 0:
@@ -366,6 +390,12 @@ class PokemonSprite(arcade.Sprite):
         return cls.detect_stronger_enemies(enemies[1:])
 
     def execute(self, rangeA: int, rangeB: int):
+        """Chance to kill a sprite
+        Args:
+            rangeA = numerator
+            rangeB = denominator
+            change percentage = (rangeA/rangeB * 100) percent
+        """
         list_of_lvls = []
         for enemy in PokemonSprite.all_enemies:
             if enemy.pokemon._lvl not in list_of_lvls and enemy not in PokemonSprite.stronger_enemies and enemy.pokemon._lvl < PokemonSprite.player.pokemon._lvl:
@@ -377,12 +407,16 @@ class PokemonSprite(arcade.Sprite):
                 self.pokemon._current_hp -= self.pokemon._current_hp
 
     def attack1(self):
+        """First ability (normal), creates AttackSprite
+        """
         if self.ability1["Active"] and self.ability1["Cooldown"][0] == self.ability1["Cooldown"][1]:
             AttackSprite(self, self.ability1, "normal",
                          PokemonSprite.boundary())
             self.ability1["Cooldown"][0] = 0
 
     def attack2(self):
+        """Second ability (special), creates AttackSprite
+        """
         if hasattr(self, "ability2"):
             if self.ability2["Active"] and self.ability2["Cooldown"][0] == self.ability2["Cooldown"][1]:
                 AttackSprite(self, self.ability2, "special",
@@ -391,6 +425,8 @@ class PokemonSprite(arcade.Sprite):
 
     @classmethod
     def follow(cls):
+        """Sets enemy botting to follow player if none are active
+        """
         if len(cls.all_enemies) > 0:
             for sprite in cls.all_enemies:
                 if sprite.pathing == "follow":
@@ -401,6 +437,8 @@ class PokemonSprite(arcade.Sprite):
         return None
 
     def damaged(self):
+        """Decreases health to pokemons if they are hit by attacks, including status ailments such as stuns
+        """
         stronger = False
         if self in PokemonSprite.all_enemies:
             stronger = True
@@ -605,7 +643,6 @@ class Player(Trainer):
 
 
 # class PC():
-
 
     def __init__(self):
         self._stored = {}
