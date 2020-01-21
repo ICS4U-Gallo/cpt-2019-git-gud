@@ -73,7 +73,7 @@ PLAYER_ITEMS = {"Pokeballs":  20,
          "Elemental pill": 20,
          "Berries": 40}
 PLAYER = utils.Player("Sir Gallo", POKEMONS, PLAYER_ITEMS, 3000)
-ENEMY = utils.Player("Sir Fabroa", POKEMONS, PLAYER_ITEMS, 1000)
+ENEMY = utils.Player("Sir Fabroa", POKEMONS, PLAYER_ITEMS, 100)
 
 THE_BATTLE = utils.Battle(PLAYER, ENEMY)
 

@@ -477,7 +477,21 @@ class Chapter3View(arcade.View):
                 self.chosen_poke = 5
         
         if self.btn_bag:
-            pass
+            if self.btn_bag_1_pokeballs:
+                if len(self.player._items["Pokeballs"]) > 0:
+                    self.player._items["Pokeballs"] -=1
+                else:
+                    self.btn_bag_1_pokeballs = False
+            if self.btn_bag_2_potions:
+                if len(self.player._items["Potions"]) > 0:
+                    self.player._items["Potions"] -= 1
+            else:
+                self.btn_bag_2_potions = False
+            if self.btn_bag_3_antidote_paralysis:
+                if len(self.player._items["Paralysis  antidote"]) > 0:
+                    self.player._items["Paralysis antidote"] -= 1
+            else:
+                self.btn_bag_3_antidote_paralysis = False
 
 if __name__ == "__main__":
     """This section of code will allow you to run your View

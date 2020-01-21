@@ -33,15 +33,9 @@ class FakeDirector:
 class Attack():
     attacks = []
 
-<<<<<<< HEAD
-    def __init__(self, attack_name: str, attack_power: int,
-                 attack_type: str, attack_audio: str = None):
-        self._attack_name = attack_name.lower()
-=======
     def __init__(self, attack: str, attack_power: int,
                  attack_type: str, attack_audio: str = None):
         self._attack = attack.lower()
->>>>>>> 83c4a5e33573430e553511ee0168d7be13bf0bc5
         self._attack_power = attack_power
         self._attack_type = attack_type.lower()
         self._attack_audio = attack_audio
@@ -83,7 +77,6 @@ class Pokemon(Attack):
                  moveset2:Dict[str,dict]=None, experience_points: int = 0, item: str = None):
         if attack != None and attack_power != None and attack_type != None:
             super().__init__(attack, attack_power, attack_type, attack_audio)
-                 moveset:List[str]=None, moveset2:Dict[str,dict]=None, experience_points: int = 0, item: str = None):
         self._name = name
         self._max_hp = health_points
         self._current_hp = health_points
@@ -161,7 +154,7 @@ class Pokemon(Attack):
         return self._exp
 
     def set_exp(self, points: int):
-        self.set_exp = points
+        self._exp = points
 
     def get_item(self):
         return self._item
@@ -576,19 +569,19 @@ class Player(Trainer):
                     del self._pokemons[i]
 
 
-# class PC():
-    def __init__(self):
-        self._stored = {}
-        self._pages = []
+# # class PC():
+#     def __init__(self):
+#         self._stored = {}
+#         self._pages = []
 
-        for page in range(20):
-            for i in range(100):
-                self._stored[i] = None
-            self._pages[page] = self._stored
+#         for page in range(20):
+#             for i in range(100):
+#                 self._stored[i] = None
+#             self._pages[page] = self._stored
 
-    def add_pokemon(self, page_number: int, place_number: int, pokemon: Pokemon):
-        for empty in self._stored[page_number]:
-            pass
+#     def add_pokemon(self, page_number: int, place_number: int, pokemon: Pokemon):
+#         for empty in self._stored[page_number]:
+#             pass
 
 
 class CPU(Trainer):  # IN PROGRESS
@@ -738,6 +731,3 @@ def binary_search(target: int, numbers: List) -> int:
         else:
             end = mid - 1
     return -1
-
-
-    return new_array
