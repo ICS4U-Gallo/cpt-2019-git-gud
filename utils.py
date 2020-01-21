@@ -333,13 +333,13 @@ class PokemonSprite(arcade.Sprite):
     def get_speed(self) -> int:
         return self._speed
 
-    def set_speed(self, value: int) -> void:
+    def set_speed(self, value: int):
         self._speed = value
 
     def get_movement(self) -> Dict[str, bool]:
         return self._movement
 
-    def set_movement(self, direction: str, moving: bool) -> void:
+    def set_movement(self, direction: str, moving: bool):
         self._movement[direction] = moving
 
     def get_character_direction(self) -> str:

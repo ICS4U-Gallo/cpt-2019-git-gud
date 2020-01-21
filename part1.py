@@ -26,7 +26,7 @@ class Part1(arcade.View):
                     "enemy", enemy, (10, 40 + i * 90), 2, "right")
 
             if utils.PokemonSprite.player is None:
-                self.pokemon = utils.Pokemon("Pikachu", 600, "electric", "", "", "", 10,
+                self.pokemon = utils.Pokemon("Pikachu", 400, "electric", "", "", "", 10,
                                              moveset2={"Normal": {"Name": "Electro Ball", "Damage": 6, "Cooldown": [30, 30],
                                                                   "Sprite Type": ["Projectile"], "Speed": 8, "Scale": 0.4},
                                                        "Special": {"Name": "ThunderBolt", "Damage": 1, "Cooldown": [240, 240],
