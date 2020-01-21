@@ -3,7 +3,7 @@ import settings
 import utils
 import os
 import json
-from test_grid import Grid
+from part1 import Part1
 
 
 class LoadFile(arcade.View):
@@ -102,8 +102,7 @@ class LoadFile(arcade.View):
                 else:
                     with open(f"saves\{self.saves[self.selection]}", "r") as f:
                         settings.info = json.load(f)
-                    # self.director.specific_view(Grid)
-                    self.director.next_view()
+                    self.director.specific_view(Part1)
 
 
 if __name__ == "__main__":
