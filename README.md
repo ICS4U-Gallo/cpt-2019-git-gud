@@ -13,6 +13,13 @@ Using [Arcade](https://arcade.academy)
 - Group members will be responsible for their own arcade view.
 - No Images or sound files.
 
+
+## Instructions
+- Arrow keys to move
+- 'A' key for primary (normal) attack (low cooldown)
+- 'S' key for secondary (special) attack (moderate cooldown) 
+
+
 ## Requirements
 You will be graded on how well *each* member demonstrates the following:
 - Functions
