@@ -2,6 +2,10 @@ import arcade
 
 import settings
 
+import os
+
+import json
+
 
 class Chapter2View(arcade.View):
     def on_show(self):
@@ -32,16 +36,16 @@ class Chapter2View(arcade.View):
                                       (settings.WIDTH //
                                        1.1) // 6, (settings.HEIGHT // 2.2) // 4,
                                       arcade.color.GOLD, 5)
-        
+
         arcade.draw_rectangle_outline(564,
                                       settings.HEIGHT - settings.WIDTH // 16,
                                       400, 75, arcade.color.BLACK, 5)
-        
+
         arcade.draw_text(self.name, 345,
                          settings.HEIGHT - settings.WIDTH // 40,
                          arcade.color.GOLD, 50, 0, "left", 'Comic  Sans',
                          True, True, "left", "top")
-    
+
         row = 0
         column = 0
         for i in range(len(self.characters)):
@@ -91,17 +95,20 @@ class Chapter2View(arcade.View):
                 self.selected_rect_y += 68.6
                 self.pos_rect_y += 1
                 self.character_location += 6
-                
+
         if key == arcade.key.BACKSPACE and len(self.name) > 2:
             self.name = self.name[:-1]
-        
+
         if self.character_location == 41 and key == arcade.key.ENTER:
+            file_num = len(os.listdir("saves"))+1
+            info = {"Name": self.name, "Character": settings.CHAR}
+            with open(f"saves\Journey {file_num}.json", "w") as f:
+                json.dump(info, f, indent=4)
             self.director.next_view()
         elif key == arcade.key.ENTER and modifiers == 1 and len(self.name) < 13:
             self.name += self.characters[self.character_location].upper()
         elif key == arcade.key.ENTER and len(self.name) < 13:
             self.name += self.characters[self.character_location]
-
 
 
 if __name__ == "__main__":

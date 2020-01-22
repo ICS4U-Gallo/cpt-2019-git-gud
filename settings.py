@@ -12,7 +12,7 @@ FEMALE_CHAR = arcade.load_texture("images/char_female.png")
 BACKGROUND_MUSIC = arcade.load_sound("audio/screen_menu.mp3")
 RING = arcade.load_sound("audio/menu_get.mp3")
 BATTLE_BACKGROUND = arcade.load_texture("images/battle_background.png")
-CHAR = ""
+CHAR = None
 NAME = ""
 ITEMS = {"Pokeballs":  0,
          "Potions":  0,
