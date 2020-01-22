@@ -339,10 +339,7 @@ class Chapter3View(arcade.View):
                 self.selected = 8
                 print("Selected Pokemon")
             elif self.selected == 2:
-                self.btn_fight = True
-                self.pause = True
-                self.selected = 4
-                print("Selected Fight")
+                self.director.next_view()
             elif self.selected == 3:
                 self.btn_bag = True
                 self.pause = True
@@ -506,6 +503,6 @@ if __name__ == "__main__":
     from utils import FakeDirector
     window = arcade.Window(settings.WIDTH, settings.HEIGHT)
     my_view = Chapter3View()
-    my_view.director = FakeDirector(close_on_next_view=True)
+    my_view.director = FakeDirector(close_on_next_view=False)
     window.show_view(my_view)
     arcade.run()

@@ -182,6 +182,7 @@ class AttackSprite(arcade.Sprite):
         self.sprite_type = attack_info["Sprite Type"][0]
         self.speed = attack_info["Speed"]
         self.scale = attack_info["Scale"]
+        self.damaging = True
         self.collided = False
         self._set_alpha(180)
         if len(attack_info["Sprite Type"]) > 1:
@@ -257,11 +258,13 @@ class AttackSprite(arcade.Sprite):
 
     def update_animation(self, delta_time=1 / 60):
         if hasattr(self, "animate"):
-            if self.timer % 10 == 0:
+            if self.timer % 20 == 0:
                 if self.animate:
                     self.animate = False
+                    self.damaging = False
                 else:
                     self.animate = True
+                    self.damaging = True
             if self.reflection == "Mirrored":
                 self.texture = arcade.load_texture(
                     f"images/attacks/{self.name}.png", scale=self.scale, mirrored=self.animate)
@@ -272,6 +275,7 @@ class AttackSprite(arcade.Sprite):
 
 class PokemonSprite(arcade.Sprite):
     player = None
+    current_enemy = None
     all_enemies = arcade.SpriteList()
     all_entities = arcade.SpriteList()
     stronger_enemies = []
@@ -312,7 +316,7 @@ class PokemonSprite(arcade.Sprite):
                               "left": None, "right": None}
         for key in self.idle_textures:
             texture = arcade.load_texture(
-                f"{self._main_path}\idle-{key}.png", scale=1.5)
+                f"{self._main_path}/idle-{key}.png", scale=1.5)
             self.idle_textures[key] = texture
 
         self.walk_textures = {"up": [], "down": [],
@@ -341,7 +345,7 @@ class PokemonSprite(arcade.Sprite):
     def get_movement(self) -> Dict[str, bool]:
         return self._movement
 
-    def set_movement(self, direction: str, moving: bool):
+    def set_movement(self, direction: str, moving: bool) -> None:
         self._movement[direction] = moving
 
     def get_character_direction(self) -> str:
@@ -359,7 +363,7 @@ class PokemonSprite(arcade.Sprite):
             right = settings.WIDTH
         return {"top": top, "bottom": bottom, "left": left, "right": right}
 
-    def set_boundaries(self):
+    def set_boundaries(self) -> None:
         """Set sprite boundaries
         """
         boundary = PokemonSprite.boundary()
@@ -369,7 +373,7 @@ class PokemonSprite(arcade.Sprite):
         self.boundary_right = boundary["right"]
 
     @classmethod
-    def remove_all_enemies(cls):
+    def remove_all_enemies(cls) -> None:
         """Remove all sprites from sprite lists they are associated with
         """
         for enemy in cls.all_enemies:
@@ -377,7 +381,7 @@ class PokemonSprite(arcade.Sprite):
         cls.stronger_enemies = []
 
     @classmethod
-    def detect_stronger_enemies(cls, enemies: List[object] = None):
+    def detect_stronger_enemies(cls, enemies: List[object] = None) -> List[object]:
         """Returns a list of sprites that are levels 2 or more than the player
         Args:
             enemies = a list of PokemonSprite enemies
@@ -391,7 +395,7 @@ class PokemonSprite(arcade.Sprite):
             return [enemies[0]] + cls.detect_stronger_enemies(enemies[1:])
         return cls.detect_stronger_enemies(enemies[1:])
 
-    def execute(self, rangeA: int, rangeB: int):
+    def execute(self, rangeA: int, rangeB: int) -> None:
         """Chance to kill a sprite
         Args:
             rangeA = numerator
@@ -408,7 +412,7 @@ class PokemonSprite(arcade.Sprite):
             if r.randint(rangeA, rangeB) == 1:
                 self.pokemon._current_hp -= self.pokemon._current_hp
 
-    def attack1(self):
+    def attack1(self) -> None:
         """First ability (normal), creates AttackSprite
         """
         if self.ability1["Active"] and self.ability1["Cooldown"][0] == self.ability1["Cooldown"][1]:
@@ -416,7 +420,7 @@ class PokemonSprite(arcade.Sprite):
                          PokemonSprite.boundary())
             self.ability1["Cooldown"][0] = 0
 
-    def attack2(self):
+    def attack2(self) -> None:
         """Second ability (special), creates AttackSprite
         """
         if hasattr(self, "ability2"):
@@ -435,7 +439,9 @@ class PokemonSprite(arcade.Sprite):
                     return True
             cls.all_enemies[0].pathing = "follow"
             cls.all_enemies[0].ability1["Active"] = False
+            cls.current_enemy = cls.all_enemies[0]
             return True
+        cls.current_enemy = None
         return None
 
     def damaged(self):
@@ -446,10 +452,10 @@ class PokemonSprite(arcade.Sprite):
             stronger = True
         for attack in self.collides_with_list(AttackSprite.all_attacks):
             if attack.ally != self._entity_type:
-                if self._entity_type == "player":
+                if self._entity_type == "player" and attack.damaging:
                     self.pokemon._current_hp -= attack.damage
                 if self._entity_type == "enemy":
-                    if self.pathing == "follow":
+                    if self.pathing == "follow" and attack.damaging:
                         self.pokemon._current_hp -= attack.damage
                     if attack.tier == "special":
                         self.stunned = True

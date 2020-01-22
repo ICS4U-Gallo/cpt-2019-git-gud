@@ -29,9 +29,11 @@ class Part2(arcade.View):
                 self.pokemon = utils.Pokemon("Pikachu", 600, "electric", "", "", "", 10,
                                              moveset2={"Normal": {"Name": "Electro Ball", "Damage": 5, "Cooldown": [30, 30],
                                                                   "Sprite Type": ["Projectile"], "Speed": 8, "Scale": 0.4},
-                                                       "Special": {"Name": "ThunderBolt", "Damage": 1, "Cooldown": [240, 240],
+                                                       "Special": {"Name": "ThunderBolt", "Damage": 2, "Cooldown": [300, 300],
                                                                    "Sprite Type": ["Stationary", "Mirrored"], "Speed": 4, "Scale": 1}})
                 utils.PokemonSprite("player", self.pokemon, (100, 100), 2)
+            if utils.PokemonSprite.current_enemy is None:
+                utils.PokemonSprite.follow()
             utils.PokemonSprite.stronger_enemies = utils.PokemonSprite.detect_stronger_enemies()
             self.display_rect = arcade.Sprite(
                 center_x=settings.WIDTH//2, center_y=settings.HEIGHT//2)
@@ -45,6 +47,12 @@ class Part2(arcade.View):
         self.display_rect.draw()
         arcade.draw_text(f"HEALTH: {utils.PokemonSprite.player.pokemon.get_current_hp()}", settings.WIDTH//2,
                          settings.HEIGHT//2+100, arcade.color.WHITE, 18, anchor_x="center", anchor_y="center")
+        if utils.PokemonSprite.current_enemy is not None:
+            arcade.draw_text(f"Enemy Health: {utils.PokemonSprite.current_enemy.pokemon.get_current_hp()}", settings.WIDTH//2, settings.HEIGHT//2,
+                            arcade.color.WHITE, 18, anchor_x="center", anchor_y="center")
+        else:
+            arcade.draw_text(f"No Enemies", settings.WIDTH//2, settings.HEIGHT//2,
+                             arcade.color.WHITE, 18, anchor_x="center", anchor_y="center")
         arcade.draw_text(f"SCORE: {utils.PokemonSprite.player.score}", settings.WIDTH//2, settings.HEIGHT//2-100,
                          arcade.color.WHITE, 18, anchor_x="center", anchor_y="center")
         utils.PokemonSprite.player.draw()
