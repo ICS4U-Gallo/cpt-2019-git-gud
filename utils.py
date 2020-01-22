@@ -41,28 +41,28 @@ class Attack:
         self._attack_audio = attack_audio
         Attack.attacks.append(self)
 
-    def set_attack(self, attack: str):
+    def set_attack(self, attack: str) -> None:
         self._attack = attack.lower()
 
-    def get_attack(self):
+    def get_attack(self) -> int:
         return self._attack
 
-    def set_attack_power(self, attack_power: int):
+    def set_attack_power(self, attack_power: int) -> None:
         self._attack_power = attack_power
 
-    def get_attack_power(self):
+    def get_attack_power(self) -> int:
         return self._attack_power
 
-    def set_attack_type(self, type: str):
+    def set_attack_type(self, type: str) -> None:
         self._attack_type = type.lower()
 
-    def get_attack_type(self):
+    def get_attack_type(self) -> str:
         return self._attack_type
 
-    def set_attack_audio(self, audio: str):
+    def set_attack_audio(self, audio: str) -> None:
         self._attack_audio = audio
 
-    def get_attack_audio(self):
+    def get_attack_audio(self) -> str:
         return self._attack_audio
 
 
@@ -80,82 +80,81 @@ class Pokemon:
         self._debuff = None
         self._image = image
         self._lvl = level
-        self._moveset = moveset
         self._moveset2 = moveset2
         self._exp = experience_points
         self._item = item
 
-    def get_name(self):
+    def get_name(self) -> str:
         return self._name
 
-    def set_name(self, name: str):
+    def set_name(self, name: str) -> None:
         self._name = name.lower()
 
-    def get_max_hp(self):
+    def get_max_hp(self) -> int:
         return self._max_hp
 
-    def set_max_hp(self, hp: int):
+    def set_max_hp(self, hp: int) -> None:
         self._hp = hp
 
-    def get_current_hp(self):
+    def get_current_hp(self) -> int:
         return self._current_hp
 
-    def set_current_hp(self, hp: int):
+    def set_current_hp(self, hp: int) -> None:
         self._hp = hp
 
-    def get_type(self):
+    def get_type(self) -> str:
         return self._type
 
-    def set_type(self, type: str):
+    def set_type(self, type: str) -> None:
         self._type = type.lower()
 
-    def get_passive(self):
+    def get_passive(self) -> str:
         return self._passive
 
-    def set_passive(self, passive: str):
+    def set_passive(self, passive: str) -> None:
         self._passive = passive.lower()
 
-    def get_debuff(self):
+    def get_debuff(self) -> str:
         return self._debuff
 
-    def get_moveset(self, attack: int):
+    def get_moveset(self, attack: int) -> Attack:
         return Attack.attacks[attack]
 
     def add_attack(self, attack: str, power: int,
-                   type: str, audio=None):
+                   type: str, audio:str=None) -> None:
         if len(Attack.attacks) <= 4:
             super().__init__()
         else:
             raise ValueError("Maximum attacks reached. Max: 4")
 
-    def get_pokemon_pic(self):
+    def get_pokemon_pic(self) -> str:
         return self._pokemon_pic
 
-    def set_pokemon_pic(self, file: str):
+    def set_pokemon_pic(self, file: str) -> None:
         self._pokemon_pic = file
 
-    def get_pokemon_sound(self):
+    def get_pokemon_sound(self) -> str:
         return self._pokemon_sound
 
-    def set_pokemon_sound(self, audio: str):
+    def set_pokemon_sound(self, audio: str) -> None:
         self._pokemon_sound = audio
 
-    def get_lvl(self):
+    def get_lvl(self) -> int:
         return self._lvl
 
-    def set_lvl(self, lvl: int):
+    def set_lvl(self, lvl: int) -> None:
         self._lvl = lvl
 
-    def get_exp(self):
+    def get_exp(self) -> int:
         return self._exp
 
-    def set_exp(self, points: int):
+    def set_exp(self, points: int) -> None:
         self._exp = points
 
-    def get_item(self):
+    def get_item(self) -> str:
         return self._item
 
-    def set_item(self, item: str):
+    def set_item(self, item: str) -> None:
         self._item = item.capitalize()
 
 
@@ -594,19 +593,19 @@ class Trainer:
         self._pokemons = pokemons
         self._items = items
 
-    def get_name(self):
+    def get_name(self) -> str:
         return self._name
 
-    def set_name(self, name: str):
+    def set_name(self, name: str) -> None:
         self._name = name.lower()
 
-    def get_items(self):
+    def get_items(self) -> Dict[str, int]:
         return self._items
 
-    def remove_item(self, item: str, amount: int):
+    def remove_item(self, item: str, amount: int) -> None:
         self._items[item.capitalize()] -= amount
 
-    def get_pokemons(self):
+    def get_pokemons(self) -> List[Pokemon]:
         return self._pokemons
 
 
@@ -615,28 +614,28 @@ class Player(Trainer):
         super().__init__(name, pokemons, items=items, money=money)
         self._money = money
 
-    def add_item(self, item: str, amount: int):
+    def add_item(self, item: str, amount: int) -> None:
         self._items[item.capitalize()] += amount
 
-    def get_money(self):
+    def get_money(self) -> int:
         return self._money
 
-    def set_money(self, money: int):
+    def set_money(self, money: int) -> None:
         self._money = money
 
-    def add_money(self, amount: int):
+    def add_money(self, amount: int) -> None:
         self._money += amount
 
-    def subtract_money(self, amount: int):
+    def subtract_money(self, amount: int) -> None:
         self._money -= amount
 
-    def add_pokemon(self, pokemon: Pokemon):
+    def add_pokemon(self, pokemon: Pokemon) -> None:
         if len(self._pokemons) <= 6:
             self._pokemons.append(pokemon)
         else:
             return ValueError("Too many pokemon. Max: 6")  # place in pc
 
-    def release_pokemon(self, name: str):
+    def release_pokemon(self, name: str) -> None:
         if len(self._pokemons) == 1:
             return ValueError("Cannot remove last pokemon. Min: 1")
         else:
@@ -679,7 +678,7 @@ class Battle():  # IN PROGRESS
         self._wild_pokemon = wild_pokemon
         self._moveset = player._pokemons[0].get_moveset
 
-    def attack(self, pokemon: object, ability, opponent: object):
+    def attack(self, pokemon: object, ability, opponent: object) -> None:
         # moveset = {"ability name": {"type": str, "power_points": int, "damage": int, "debuffs: str/None"}}
         if self._moveset[ability]["power_points"] == 0:
             return "Unable to use ability"

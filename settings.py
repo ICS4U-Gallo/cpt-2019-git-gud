@@ -71,10 +71,10 @@ PLAYER_ITEMS = {"Pokeballs":  20,
          "Defense pill": 17,
          "Elemental pill": 20,
          "Berries": 40}
-# PLAYER = utils.Player("Sir Gallo", POKEMONS, PLAYER_ITEMS, 3000)
-# ENEMY = utils.Player("Sir Fabroa", POKEMONS, PLAYER_ITEMS, 1000)
+PLAYER = utils.Player("Sir Gallo", POKEMONS, PLAYER_ITEMS, 3000)
+ENEMY = utils.Player("Sir Fabroa", POKEMONS, PLAYER_ITEMS, 1000)
 
-# THE_BATTLE = utils.Battle(PLAYER, ENEMY)
+THE_BATTLE = utils.Battle(PLAYER, ENEMY)
 
 strengths = {"bug": ["grass", "dark", "psychic"], "dark": ["ghost", "psychic"],
              "dragon": ["dragon"], "electric": ["flying", "water"], "fairy": ["fighting", "dark", "dragon"],
